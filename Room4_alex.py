@@ -74,8 +74,14 @@ class Room:
                 print(f"There is a {obj.name} here.")
     def move(self, direction):
         if direction in ["down", "d", "well"]:
-            print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
+            print("You jump through the portal hidden in the cracks.")
             return "down"
+        elif direction in ["north", "n", "backward", "b"]:
+            print("You move back to you came from.")
+            return "north"
+        elif direction in ["south", "s", "forward", "f"]:
+            print("You move forward.")
+            return "south"
         else:
             print("You can't go that way.")
             return None
