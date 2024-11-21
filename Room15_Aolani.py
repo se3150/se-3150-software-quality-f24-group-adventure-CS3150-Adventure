@@ -20,12 +20,26 @@ class Lamp(Object):
             ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
 
 
+
+#added a book with a clue on how to get out of the room
+class Book(Object):
+    def __init__(self, name, description, can_be_gotten, state, visible):
+        super().__init__("Book", "A ancient Egypt book with mysterious symbols on its cover.", True, "closed", True)
+
+    def use(self):
+        if self.state == "closed":
+            self.state = "open"
+            print("You can open the book, with the lamp on now you can see the symbols and get a clue on how to escape!")
+
+
+
+
 class Room:
 
     objects = []
 
     def __init__(self):
-        self.room_num = 0
+        self.room_num = 15
         self.description = (
             "You awaken, wondering how you got here. Some evil spell has been cast upon you!\n"
             "You are sitting inside a dark room with stone floors, walls, and a low ceiling.\n"
@@ -33,12 +47,16 @@ class Room:
             "A circular 'well' sits in the center of the room, the surface of the water\n"
             "glows with an unearthly light.\n"
         )
-        # other room setup - add the lamp and set up the exits.
+        # other room setup - add the lamp and book and set up the exits. s
         lamp = Lamp("Lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
+        book = Book("Book", "A small but worn book filled with clues.", True, "closed", True)
+
         self.objects.append(lamp)
+        self.objects.append(book)
+
         
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = ["down"]
+        self.exits = ["east", "west", "north"]
 
 
 
@@ -96,25 +114,56 @@ class Room:
     # Helper functions
     def describe_room(self):
         print(self.description)
-        if self.objects:
-            for obj in self.objects:
+        for obj in self.objects:
+            if obj.name == "Book" and self.get_object_state("Lamp") == "off":
+                print("THe room is dark but I see something on the table.")
+            else:
                 print(f"There is a {obj.name} here.")
 
-    def move(self, direction):
-        if direction in ["down", "d", "well"]:
-            print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
-            return "down"
+
+
+    def get_object_state(self, name):
+        for obj in self.objects:
+            if obj.name == name:
+                return obj.state
+            
+
+
+
+    def move(self, direction, player):
+        if direction in ["north", "n", "well"]:
+            if any(obj.name == "Book" and obj.state == "open" for obj in player.inventory):
+                print("There is a hidden passage heading north that will show itself.")
+                return "north"
+            else:
+                print("The north door is locked, you must check teh book for a clue")
+                return None
+        elif direction in ["east", "e"]:
+            return "east"
+        elif direction in ["west", "w"]:
+            return "west"
         else:
             print("You can't go that way.")
             return None
+
+
 
     def look(self, target, player):
         if(target == None or target == "" ):
             self.describe_room()
             return
 
-        if target == "well":
+        elif target == "book":
+            print("The book is on the table closed with the symbols glowing. You're getting closer to finding the clues.")
+
+        
+        elif target == "lamp":
+            print("The lamp is simple and work but it works. You can turn it on or off.")
+
+    
+        elif target == "well":
             print("Upon closer inspection, the liquid is not water -- it's pure magic. It seems the well may be a portal to somewhere.")
+        
         else:
             # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
@@ -124,6 +173,8 @@ class Room:
                         print(f"The {obj.name} is {obj.state}")                   
                     return
         
+
+
     # this code could also probably be used verbatim
     def get(self, item_name, player):
         # Check if the item is in the room's objects list
@@ -147,17 +198,18 @@ class Room:
         # If the item was not found in the room
         print(f"There is no {item_name} here or you can't get it.")
     
-        def drop(self, item_name, player):
-            # Check if the item is in the player's inventory
-            for item in player.inventory:
-                if item.name.lower() == item_name.lower():  # Case-insensitive comparison
-                    player.inventory.remove(item)
-                    self.objects.append(item)
-                    print(f"You drop the {item.name} on the ground.")
-                    return 
+    def drop(self, item_name, player):
+        # Check if the item is in the player's inventory
+        for item in player.inventory:
+            if item.name.lower() == item_name.lower():  # Case-insensitive comparison
+                player.inventory.remove(item)
+                self.objects.append(item)
+                print(f"You drop the {item.name} on the ground.")
+                return 
 
-            # If the item was not found in the player's inventory
-            print(f"You can't drop {item_name}. You don't have that.")
+        # If the item was not found in the player's inventory
+        print(f"You can't drop {item_name}. You don't have that.")
+
 
     def show_inventory(self, player):
         player.show_inventory()
@@ -171,10 +223,10 @@ class Room:
             sys.exit(0)
 
     def show_help(self):
-        print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help")
+        print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help, hint")
 
     def show_hint(self):
-        print("This is the starting room. You probably ought to get the lamp and go down the well.")
+        print("If you turn on the lamp you might reveal a hidden book. The book might hold a clue on how to escape.")
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
