@@ -1,36 +1,20 @@
-from object import Object
 from player import Player
 import sys  # For exiting the game
 # this is how you create a new object. You inherit from class Object and override the 'use' function. 
-class Lamp(Object):
-    def __init__(self, name, description, can_be_gotten, state, visible):
-        # Call the superclass constructor
-        super().__init__(name, description, can_be_gotten, state, visible)
-    def use(self):
-        # the lamp toggles when you 'use' it. 
-        if self.state == "off":
-            self.state = "on"
-            print(f"{self.name} is now on.")
-        else:
-            self.state = "off"
-            print(f"{self.name} is now off.")
-            ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
 class Room:
     objects = []
     def __init__(self):
         self.room_num = 0
         self.description = (
-            "You awaken, wondering how you got here. Some evil spell has been cast upon you!\n"
-            "You are sitting inside a dark room with stone floors, walls, and a low ceiling.\n"
-            "There are no doors and no windows. Water drips noisily from the ceiling.\n"
-            "A circular 'well' sits in the center of the room, the surface of the water\n"
-            "glows with an unearthly light.\n"
+            "You enter an old forgotten hallway with small to medium cracks in the floor.\n"
+            "The walls and ceiling look worn down with the ceiling being high enough for a person to stand up.\n"
+            "You can continue to move forward south or move back north.\n"
+            "There appears to be a slight sound in this room\n"
+            "that sounds magical and otherworldly.\n"
         )
-        # other room setup - add the lamp and set up the exits.
-        lamp = Lamp("Lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
-        self.objects.append(lamp)
+        # other room setup - set up the exits.
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = ["down"]
+        self.exits = ["north", "south", "down"]
     def enter(self, player):
         # step 1 - Print the room description
         self.describe_room()
@@ -89,8 +73,8 @@ class Room:
         if(target == None or target == ""):
             self.describe_room()
             return
-        if target == "well":
-            print("Upon closer inspection, the liquid is not water -- it's pure magic. It seems the well may be a portal to somewhere.")
+        if target == "cracks":
+            print("Upon closer inspection, there is what looks to be a portal to somewhere underneath the cracks.")
         else:
             # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
@@ -139,6 +123,6 @@ class Room:
     def show_help(self):
         print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help")
     def show_hint(self):
-        print("This is the starting room. You probably ought to get the lamp and go down the well.")
+        print("This is the hallway room. You probably ought to go forward south or investigate where the sound is coming from.")
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
