@@ -86,7 +86,7 @@ class Room:
             print("You can't go that way.")
             return None
     def look(self, target, player):
-        if(target == None or target == "" ):
+        if(target == None or target == ""):
             self.describe_room()
             return
         if target == "well":
