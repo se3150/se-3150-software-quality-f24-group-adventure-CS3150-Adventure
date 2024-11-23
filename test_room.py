@@ -125,8 +125,8 @@ def describe_Room_15_Unit_Tests():
             room = Room()
             room.show_stats(player)
             player.print_stats.assert_called_once()
-
-
+        
+        
 
     def describe_the_room_handles_moving_correctly():
 
