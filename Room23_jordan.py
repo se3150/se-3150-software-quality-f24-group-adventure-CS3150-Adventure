@@ -3,44 +3,57 @@ from player import Player
 import sys  # For exiting the game
 
 
-# this is how you create a new object. You inherit from class Object and override the 'use' function. 
-class Lamp(Object):
+class ThinkBee(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
-        # Call the superclass constructor
         super().__init__(name, description, can_be_gotten, state, visible)
 
     def use(self):
-        # the lamp toggles when you 'use' it. 
-        if self.state == "off":
-            self.state = "on"
-            print(f"{self.name} is now on.")
-        else:
-            self.state = "off"
-            print(f"{self.name} is now off.")
-            ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
+        fin = open("./bee.txt", "r")
+
+        for line in fin:
+            if line != "\n" and line != "  \n":
+                print(line)
+
+class Splendor(Object):
+    def __init__(self, name, description, can_be_gotten, state, visible):
+        super().__init__(name, description, can_be_gotten, state, visible)
+
+    def use(self):
+        print("The Splendor if Tranquil Waters is A scepter around which swirls pure water.\nIn days long past, it once symbolized the highest authority over the seas.")
+        print("")
+        print("The sceptre glows and the guests of the Salon Solitaire appear.")
+        print("One introduces itself as Gentilhomme Usher, it is an octopus with a ball head")
+        print("The second a bubbly seahorse that introduces itself as Surintendante Chevalmarin")
+        print("And finally the third. A crab named Mademoiselle Crabaletta.")
+        print()
+        print("The guests do nothing besides float around and make weird noises.")
+
 
 
 class Room:
 
     objects = []
 
-    def __init__(self):
-        self.room_num = 0
+    def __init__ (self):
+        self.room_num = 23
         self.description = (
-            "You awaken, wondering how you got here. Some evil spell has been cast upon you!\n"
-            "You are sitting inside a dark room with stone floors, walls, and a low ceiling.\n"
-            "There are no doors and no windows. Water drips noisily from the ceiling.\n"
-            "A circular 'well' sits in the center of the room, the surface of the water\n"
-            "glows with an unearthly light.\n"
+            "You walk into a room. You hear some music playng\n"
+            "It kind of sounds like an opera piece by the \n"
+            "Romantic era french composer Jules Massenet...\n"
+            "You think it may be in your mind and you think\n"
+            "you are probably going crazy. The room is dimly lit.\n"
+            "The music can also be metal. Six and one half dozen does\n"
+            "the other am I right?"
         )
-        # other room setup - add the lamp and set up the exits.
-        lamp = Lamp("Lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
-        self.objects.append(lamp)
-        
-        #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = ["down"]
+
+        bee=ThinkBee("Think bee", "A odd looking orb speaking an odd language.", True, "off", True )
+        sceptre = Splendor("The Splendor of Tranquil Waters", "A glowing cane readiating power", True, "off", True)
 
 
+        self.objects.append(bee)
+        self.objects.append(sceptre)
+
+        self.exits=["down"]
 
     def enter(self, player):
 
@@ -90,7 +103,6 @@ class Room:
             
             elif command_base in ["use"]:
                 name = parts[1:]
-
                 true_name = ""
                 for word in name:
                     true_name = true_name + word
@@ -105,10 +117,6 @@ class Room:
             else:
                 self.unknown_command()
 
-
-
-
-    # Helper functions
     def describe_room(self):
         print(self.description)
         if self.objects:
@@ -193,3 +201,6 @@ class Room:
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
+    
+    
+
