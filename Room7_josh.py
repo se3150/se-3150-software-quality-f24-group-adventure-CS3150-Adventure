@@ -6,19 +6,22 @@ import sys  # For exiting the game
 
 # this is how you create a new object. You inherit from class Object and override the 'use' function. 
     
-class d_20(Object):
+class d_(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
         # Call the superclass constructor
         super().__init__(name, description, can_be_gotten, state, visible)
 
-    def use(self):
-        value = random.randrange(0, 20) 
-        if value%2 == True:
-            print('You rolled', value, 'you health has increased')
-            Player.health = Player.health + value
-        else:
-            print('You rolled', value, 'you health has decreased')
-            Player.health = Player.health - value
+    def use(self, player):
+        value = random.randint(1, 100)
+        if value % 2 != 0:  
+            print(f'You rolled {value}. Your health has increased!')
+            player.health += value
+        else:  
+            print(f'You rolled {value}. Your health has decreased!')
+            player.health -= value
+
+        
+        print(f'Your current health is now {player.health}.')
         
 
 
@@ -41,12 +44,13 @@ class Room:
             
         )
         # other room setup - add the lamp and set up the exits.
-        dice = d_20("Dice", "A 20 sided die that is glowing is ", True, "off", True)
+        dice = d_("Dice", "A 20 sided die that is glowing is ", True, "off", True)
         self.objects.append(dice)
         
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = ["west"]
-        self.exits = ["south"]
+        self.exits = []
+
+        
 
 
 
@@ -68,9 +72,8 @@ class Room:
 
             #Do the command - You should make helper functions for each of these in your room as well.
             if command_base in ["ticket-booth"]:
-                next = self.move(other_part)
-                if(next != None):
-                    return next
+                self.move(player)
+                
             
             elif command_base == "look":
                 self.look(other_part, player)
@@ -108,14 +111,44 @@ class Room:
             for obj in self.objects:
                 print(f"There is a {obj.name} here.")
 
-    def move(self, direction):
+    def move(self, direction, player):
         if direction in ["ticket-booth"]:
-            print("As you get closer you see a dice tower.\n")
-            print("It has a sign that reads 'ROLL TO PASS'.\n")
-            return "ticket-booth"
+            print("You approach the ticket booth.")
+            print("A sign reads: 'ROLL TO PASS. SUCCESSFUL ROLL REQUIRED.'")
+
+            # Has the dice
+            if not player.has_item("Dice"):
+                print("You need the dice to proceed.")
+                return
+
+            # Ask the player if they want to roll the dice
+            while True:
+                choice = input("Do you want to roll the dice? (yes/no): ").lower().strip()
+                if choice == "yes":
+                    dice = next(obj for obj in player.inventory if obj.name.lower() == "dice")
+                    dice.use(player)
+
+                    print("The gate opens, and new paths are revealed!")
+                    self.add_exits() 
+                    return
+                    
+                elif choice == "no":
+                    print("You decide not to roll the dice for now.")
+                    return
+                
+                else:
+                    print("Please answer 'yes' or 'no'.")
+
         else:
             print("You can't go that way.")
             return None
+    
+    def add_exits(self):
+        if "west" not in self.exits:
+            self.exits.append("west")
+        if "south" not in self.exits:
+            self.exits.append("south")
+        print(f"New exits available: {', '.join(self.exits)}")
 
     def look(self, target, player):
         if(target == None or target == "" ):
