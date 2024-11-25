@@ -4,20 +4,31 @@ import sys  # For exiting the game
 
 
 # this is how you create a new object. You inherit from class Object and override the 'use' function. 
-class Lamp(Object):
+# class Lamp(Object):
+#     def __init__(self, name, description, can_be_gotten, state, visible):
+#         # Call the superclass constructor
+#         super().__init__(name, description, can_be_gotten, state, visible)
+
+#     def use(self):
+#         # the lamp toggles when you 'use' it. 
+#         if self.state == "off":
+#             self.state = "on"
+#             print(f"{self.name} is now on.")
+#         else:
+#             self.state = "off"
+#             print(f"{self.name} is now off.")
+#             ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
+
+class Book (Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
-        # Call the superclass constructor
         super().__init__(name, description, can_be_gotten, state, visible)
 
     def use(self):
-        # the lamp toggles when you 'use' it. 
-        if self.state == "off":
-            self.state = "on"
-            print(f"{self.name} is now on.")
-        else:
-            self.state = "off"
-            print(f"{self.name} is now off.")
-            ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
+        pass
+        # if self.state == 'off':
+        #     self.state = 'on'
+        # else:
+        #     self.state = 'off'
 
 
 class Room:
@@ -25,29 +36,37 @@ class Room:
     objects = []
 
     def __init__(self):
-        self.room_num = 0
-        self.description = (
-            "You awaken, wondering how you got here. Some evil spell has been cast upon you!\n"
-            "You are sitting inside a dark room with stone floors, walls, and a low ceiling.\n"
-            "There are no doors and no windows. Water drips noisily from the ceiling.\n"
-            "A circular 'well' sits in the center of the room, the surface of the water\n"
-            "glows with an unearthly light.\n"
+        self.room_num = 27
+        self.entrance_description = (
+            "\nAs you step into the room, you are greeted by a sight both awe-inspiring and eerie.\n"
+            "Towering bookshelves stretch endlessly towards the vaulted ceiling, each shelf filled with ancient tomes and scrolls.\n"
+            "The air is thick with the scent of old parchment and a faint hint of mustiness. Dim, flickering candles cast dancing shadows on the walls,\n"
+            "and the faint rustle of pages being turned echoes softly through the vast space. At the center of the room, a grand oak table stands,\n"
+            "laden with manuscripts and quills, as if abandoned mid-study.\n"
+            "The flickering light reveals a majestic figure perched atop a high podium—an imposing owl with piercing, luminous eyes that seem to see through your very soul.\n"
+            "The guardian of this library watches your every move, its presence both regal and intimidating. You can't help but feel a sense of wonder and foreboding as you take in the vast expanse of knowledge contained within these walls.\n"
+            "Yet, an uneasy tension hangs in the air, as if the library itself is alive and watching, waiting to reveal its secrets to those deemed worthy—or to punish those who are not.\n"
         )
-        # other room setup - add the lamp and set up the exits.
-        lamp = Lamp("Lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
-        self.objects.append(lamp)
         
+        # other room setup - add the lamp and set up the exits.
+        book = Book("Book", "A dusty old thick book, with an ominous glow from within the pages.", True, "off", True)
+        self.objects.append(book)
+
+        self.state = "entrance"
+        self.guardian_interacted = False
+        self.forbidden_section_unlocked = False
+
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
         self.exits = ["down"]
 
 
 
     def enter(self, player):
+        
+        # step 1 - describe entrance
+        print(self.entrance_description)
 
-        # step 1 - Print the room description
-        self.describe_room()
-
-        # step 2 - make your own command loop - watch carefully about how to parse commands:
+        # step 2 - manange player state within library
         while True:
             command = input("> ").lower().strip()
             parts = command.split(" ", 1)
@@ -58,47 +77,96 @@ class Room:
             else:
                 other_part = ""
 
-            #Do the command - You should make helper functions for each of these in your room as well.
-            if command_base in ["move", "go"]:
-                next = self.move(other_part)
-                if(next != None):
-                    return next
-            
-            elif command_base == "look":
-                self.look(other_part, player)
-
-            elif command_base in ["get", "take"]:
-                self.get(other_part, player)
-
-            elif command_base in ["drop", "put"]:
-                self.drop(other_part, player)
-
-            elif command_base == "inventory":
-                self.show_inventory(player)
-
-            elif command_base == "stats":
-                self.show_stats(player)
-
-            elif command_base == "quit":
-                self.quit_game(player)
-
-            elif command_base in ["help", "?"]:
-                self.show_help()
-            
-            elif command_base == "hint":
-                self.show_hint()
+            if self.state == "entrance":
+                self.handle_entrance_commands(command_base, other_part, player)
+            elif self.state == "library":
+                self.handle_library_commands(command_base, other_part, player)
+            elif self.state == "forbidden_section":
+                self.handle_forbidden_section_commands(command_base, other_part, player)
             else:
-                self.unknown_command()
+                print("Unknown state.")
+            
+    def handle_entrance_commands(self, command_base, other_part, player):
+        if command_base == "look":
+            self.look(other_part, player)
+        elif command_base in ["move", "go"]:
+            self.move_from_entrance(other_part)
+        else:
+            self.unknown_command()
+
+            #Do the command - You should make helper functions for each of these in your room as well.
+            # if command_base in ["move", "go"]:
+            #     next = self.move(other_part)
+            #     if(next != None):
+            #         return next
+            
+            # elif command_base == "look":
+            #     self.look(other_part, player)
+
+            # elif command_base in ["get", "take"]:
+            #     self.get(other_part, player)
+
+            # elif command_base in ["drop", "put"]:
+            #     self.drop(other_part, player)
+
+            # elif command_base == "inventory":
+            #     self.show_inventory(player)
+
+            # elif command_base == "stats":
+            #     self.show_stats(player)
+
+            # elif command_base == "quit":
+            #     self.quit_game(player)
+
+            # elif command_base in ["help", "?"]:
+            #     self.show_help()
+            
+            # elif command_base == "hint":
+            #     self.show_hint()
+            # else:
+            #     self.unknown_command()
 
 
 
 
     # Helper functions
     def describe_room(self):
-        print(self.description)
+        print(self.entrance_description)
         if self.objects:
             for obj in self.objects:
-                print(f"There is a {obj.name} here.")
+                print(f"There are {obj.name}s here. Which one...")
+
+    def move_from_entrance(self):
+        print (
+            "\nYou start to enter into the libray and the owl lets out war screeches.\n"
+            "Startled, you look up to see the owl swoop from its perch and scale 10 times in size.\n"
+            "Now towering over you, the owl demands to know your reasoning for entering.\n"
+            "You can either:\n"
+            "'Show' the owl your piece of paper from the previous room\n"
+            "OR\n"
+            "'Lie' and say you want to explore the vast knowledge of tomes in the Owl's collection\n"
+        )
+        ans = input("What do you do? (show/lie) ").lower().strip()
+        if ans.startswith('s'):
+            self.show_note()
+        elif ans.startswith('l'):
+            self.lie()
+        else:
+            print("That's not a valid response. Try again.")
+            self.move_from_entrance()
+
+    def showNote(self):
+        print("You show the owl the note. The owl's eyes glow with anger and it lets out a deafening screech before swooping down and destroying you.")
+        self.player.health = 0
+        print("Your health has dropped to 0. You have been killed by the owl.")
+        # Check player's health and exit the game if it's 0
+        if not self.player.is_alive():
+            print("Game Over. You have died.")
+            sys.exit(0)
+
+    def Lie(self):
+        print("You lie and say you want to explore the vast knowledge of tomes in the Owl's collection. The owl eyes you suspiciously but allows you to proceed.")
+        self.state = "library"
 
     def move(self, direction):
         if direction in ["down", "d", "well"]:
@@ -109,7 +177,7 @@ class Room:
             return None
 
     def look(self, target, player):
-        if(target == None or target == "" ):
+        if(target == None or target == ""):
             self.describe_room()
             return
 
