@@ -167,12 +167,11 @@ class Room:
                 print("You walk through the doorway to the west.")
                 print("You notice a key hanging on the wall.")
                 
-                # Check if the key is in the room and add it to the player's inventory
                 key = next((obj for obj in self.objects if isinstance(obj, Object) and obj.name == "key"), None)
                 if key and key.can_be_gotten:
                     player.inventory.append(key)
                     print(f"{player.name} has picked up the {key.name}. It has been added to your inventory.")
-                    self.objects.remove(key)  # Remove the key from the room after picking it up
+                    self.objects.remove(key) 
                 else:
                     print("There is no key to pick up.")
 
@@ -184,28 +183,20 @@ class Room:
             chest = next((obj for obj in self.objects if isinstance(obj, Chest)), None)
             if chest:
                 chest.use(player)
-            return 9  # Example room ID for east
+            return 9  
         elif direction in ["north", "n"]:
             print("You see a door leading to Room 7. You walk through it.")
-            return 7  # Example room ID for north
+            return 7 
         elif direction in ["south", "s"]:
             print("You move to the left side of the room.")
             creature = next((obj for obj in self.objects if isinstance(obj, Creature)), None)
             if creature:
                 print("The creature attacks!")
                 creature.use(player)
-                return None if player.condition == "dead" else self.id  # Return current room if alive
+                return None if player.condition == "dead" else self.id 
             else:
                 print("The area is clear.")
             return None
-        elif direction in ["down", "d"]:
-            crystal_on = any(obj.name == "crystal" and obj.state == "on" for obj in self.objects)
-            if crystal_on:
-                print("The crystal's light helps you see the stairs as you go down.")
-                return 25  # Example room ID for down
-            else:
-                print("It's too dark to go down the stairs safely.")
-                return None
         else:
             print("You can't go that way.")
             return None
