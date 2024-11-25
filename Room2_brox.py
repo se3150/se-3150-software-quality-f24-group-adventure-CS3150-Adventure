@@ -68,9 +68,13 @@ class Room:
                 print(f"There is a {obj.name} here.")
 
     def move(self, direction):
-        if direction in ["down", "d", "well"]:
-            print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
-            return "down"
+        if direction == "up":
+            return "up"
+        elif direction == "south":
+            return "south"
+        elif direction == "west":
+            print("You flee the room from the tickle monster through a long corridor...")
+            return "west"
         else:
             print("You can't go that way.")
             return None
@@ -80,10 +84,9 @@ class Room:
             self.describe_room()
             return
 
-        if target == "well":
-            print("Upon closer inspection, the liquid is not water -- it's pure magic. It seems the well may be a portal to somewhere.")
+        if target in ["box", "brox", "brox box", "broxbox"]:":
+            print("Fire looking box, you should use it")
         else:
-            # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
                 if target == obj.name:
                     print(obj.description) 
@@ -256,7 +259,6 @@ class TheBroxBox(Object):
                 self.player.condition = "Omar's Aura"
                 return False  # Stop being tickled
             else:
-                # Additional logic if needed
                 return True
 
         def tickle_monster():
