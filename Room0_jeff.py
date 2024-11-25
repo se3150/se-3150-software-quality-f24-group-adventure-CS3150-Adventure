@@ -87,21 +87,6 @@ class Room:
             
             elif command_base == "hint":
                 self.show_hint()
-            
-            elif command_base in ["use"]:
-                name = parts[1:]
-
-                true_name = ""
-                for word in name:
-                    true_name = true_name + word
-                base = False
-                for obj in self.objects:
-                    if true_name.lower() == obj.name.lower():
-                        print()
-                        obj.use()
-                        base = True
-                if base == False:
-                    print("Unknown command")
             else:
                 self.unknown_command()
 

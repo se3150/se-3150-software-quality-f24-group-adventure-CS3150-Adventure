@@ -53,7 +53,7 @@ class Room:
         self.objects.append(bee)
         self.objects.append(sceptre)
 
-        self.exits=["down"]
+        self.exits=["up", "right"]
 
     def enter(self, player):
 
