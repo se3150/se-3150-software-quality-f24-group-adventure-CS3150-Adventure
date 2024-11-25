@@ -57,7 +57,7 @@ class Room:
             for obj in self.objects:
                 print(f"There is a {obj.name} here.")
     def move(self, direction):
-        if direction in ["down", "d", "well"]:
+        if direction in ["down", "d", "portal"]:
             print("You jump through the portal hidden in the cracks.")
             return "down"
         elif direction in ["north", "n", "backward", "b"]:
