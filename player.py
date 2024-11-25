@@ -32,5 +32,3 @@ class Player:
         print(f"Condition: {self.condition}")
         print(f"Current Room: {self.current_room}")
         print(f"Score: {self.score}")
-
-
