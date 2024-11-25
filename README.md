@@ -1,4 +1,4 @@
-# CS3150-Adventure
+ # CS3150-Adventure
 
 This is the repository for the template code to setup the Utah Tech CS-3150 crowd sourced adventure game. The intention of this project is that each student in class will build a ROOM that is part of a whole adventure game. The rooms are linked together by a MAP (really a bi-directional connected graph of rooms) that the PLAYER will traverse during their adventure. 
 

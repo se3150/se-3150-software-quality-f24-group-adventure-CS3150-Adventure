@@ -4,7 +4,7 @@ import sys  # For exiting the game
 
 
 # this is how you create a new object. You inherit from class Object and override the 'use' function. 
-class Lamp(Object):
+class Goblin(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
         # Call the superclass constructor
         super().__init__(name, description, can_be_gotten, state, visible)
@@ -13,11 +13,11 @@ class Lamp(Object):
         # the lamp toggles when you 'use' it. 
         if self.state == "off":
             self.state = "on"
-            print(f"{self.name} is now on.")
+            print(f"{self.name} You tickle the goblin. The goblin is tickled at your tickling, it seems he likes you.")
         else:
             self.state = "off"
             print(f"{self.name} is now off.")
-            ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
+            ("goblin", "A grimy, but very cool little goblin. He definitely knows how to party.", True, "off", True)
 
 
 class Room:
@@ -27,18 +27,19 @@ class Room:
     def __init__(self):
         self.room_num = 0
         self.description = (
-            "You awaken, wondering how you got here. Some evil spell has been cast upon you!\n"
-            "You are sitting inside a dark room with stone floors, walls, and a low ceiling.\n"
-            "There are no doors and no windows. Water drips noisily from the ceiling.\n"
-            "A circular 'well' sits in the center of the room, the surface of the water\n"
-            "glows with an unearthly light.\n"
+            "You enter the room. It is a huge open concept frathouse! ALRIGHT!\n"
+            "The TV is HUGE! The pool is HUGE! The hotub is HOT! And HUGE!.\n"
+            "You are so stoked to be here! SO STOKED! SOOO STOOOKED.\n"
+            "There's a very cool goblin lurking around and partying.\n"
+            "Also, strangely, there's a signpost in the middle of the awsome open concept kitchen.\n"
+            "It reads: 'down to loserville, west to loserville, east to loserville'.\n"
         )
         # other room setup - add the lamp and set up the exits.
-        lamp = Lamp("Lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
-        self.objects.append(lamp)
+        goblin = Goblin("Goblin", "A grimy, but very cool little goblin. He definitely knows how to party.", True, "off", True)
+        self.objects.append(goblin)
         
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = ["down"]
+        self.exits = ["down", "west", "east"]
 
 
 
@@ -101,9 +102,15 @@ class Room:
                 print(f"There is a {obj.name} here.")
 
     def move(self, direction):
-        if direction in ["down", "d", "well"]:
-            print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
+        if direction in ["down", "d"]:
+            print("You travel down. You understand this means you'll be instantly less cool. Oh well, not everyone is baller.")
             return "down"
+        elif direction in ["west", "w"]:
+            print("You travel west. You understand this means you'll be instantly less cool. Oh well, not everyone is baller.")
+            return "west"
+        elif direction in ["east", "e"]:
+            print("You travel east. You understand this means you'll be instantly less cool. Oh well, not everyone is baller.")
+            return "east"
         else:
             print("You can't go that way.")
             return None
@@ -113,8 +120,8 @@ class Room:
             self.describe_room()
             return
 
-        if target == "well":
-            print("Upon closer inspection, the liquid is not water -- it's pure magic. It seems the well may be a portal to somewhere.")
+        if target == "goblin":
+            print("Upon closer inspection, the goblin is not only cool -- he's SUPER cool. You really want to be his friend.")
         else:
             # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
