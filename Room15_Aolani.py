@@ -38,7 +38,7 @@ class Room:
         self.objects.append(lamp)
         
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = ["east", "west", "north"]
+        self.exits = ["east", "west", "north", "well"]
 
 
 
