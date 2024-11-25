@@ -145,16 +145,17 @@ class CasinoRoom:
             return
 
         print(f"You currently have {player.score} points.")
-        if input("Would you like to gamble all your points? (yes/no) ").lower().startswith("y"):
-            result = random.choice(["win", "lose"])
-            if result == "win":
-                player.score *= 2
-                print(f"Congratulations! You doubled your points. You now have {player.score} points!")
-            else:
-                player.score = 0
-                print("Bad luck! You lost all your points.")
+        points_to_gamble = int(input("How many points would you like to gamble? "))
+        if points_to_gamble > player.score:
+            print("You don't have that many points! You only have ", player.score)
+            return
+        player.score -= points_to_gamble
+        result = random.choice(["win", "lose"])
+        if result == "win":
+            player.score += points_to_gamble*2
+            print(f"Congratulations! You won double! You now have {player.score} points!")
         else:
-            print("Maybe next time!")
+            print("You lose! but you could win if you just gamble a little more")
 
     def show_inventory(self, player):
         player.show_inventory()
