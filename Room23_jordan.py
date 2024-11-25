@@ -127,6 +127,10 @@ class Room:
         if direction in ["down", "d", "well"]:
             print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
             return "down"
+        elif direction in ["up"]:
+            return "up"
+        elif direction in ["east"]:
+            return "east"
         else:
             print("You can't go that way.")
             return None
