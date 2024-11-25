@@ -35,7 +35,7 @@ class Room:
             Chalk(
                 "chalk",
                 "A bag filled with a white powdery substance that improves your grip strength.",
-                False,
+                True,
                 "off",
                 True,
             )
@@ -73,13 +73,13 @@ class Room:
             chalk = next((obj for obj in player.inventory if obj.name.lower() == "chalk"), None)
             if chalk and chalk.state == "on":
                 print("You scale the wall with ease, thanks to the chalk. You reach the top platform!")
-                return "next_room"  # Replace with actual next room logic
+                return "north" 
             else:
                 print("The wall is too slippery to climb without chalk!")
                 return None
         elif direction in ["east", "e"]:
             print("You exit the room to the east.")
-            return "east_room"  # Replace with actual next room logic
+            return "east"
         else:
             print("You can't go that way.")
             return None
