@@ -43,7 +43,8 @@ class Skull(Object):
         super().__init__(name, description, can_be_gotten, state, visible)
 
     def use(self):
-        pass
+        print("The skull begins to speak:\n"
+              "\"The correct cup will bring you life, but the wrong one will bring death\"")
 
 
 class Room:
