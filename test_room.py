@@ -1,30 +1,12 @@
 from unittest.mock import MagicMock, patch
 import pytest
-from Room15_Aolani import Room, Lamp
+from Room15_Aolani import Room, Lamp, SpiderRoom
 from player import Player
 
 
 def describe_Room_15_Unit_Tests():
 
     def describe_the_room_is_setup_correctly():
-
-        # def it_prints_a_description_when_it_loads():
-        #     # Setup
-        #     player = MagicMock()
-        #     player.score = 100  # Mock the player's score if accessed in quit_game
-        #     room = Room()
-        #     room.describe_room = MagicMock()  # Mock describe_room to check if it gets called
-
-        #     # Simulate user inputs for "quit" and "yes"
-        #     with patch('builtins.input', side_effect=["quit", "yes", ""]), patch("sys.exit") as mock_exit:
-        #         result = room.enter(player)  # Call the enter method
-
-        #     # Assert describe_room is called when room loads
-        #     room.describe_room.assert_called_once()
-
-        #     # Assert sys.exit(0) is called
-        #     mock_exit.assert_called_once_with(0)
-
 
 
         def there_is_a_lamp_in_the_room():
@@ -133,7 +115,10 @@ def describe_Room_15_Unit_Tests():
         
         def the_player_can_go_north():
             room = Room()
-            assert room.move("north") == 11
+            next_room = room.move("north")
+            assert isinstance(next_room, SpiderRoom), "Moving north should transition to SpiderRoom"
+            assert next_room.room_num == 11, "SpiderRoom should have room_num set to 11"
+
 
 
         def the_player_can_go_east():
@@ -156,7 +141,35 @@ def describe_Room_15_Unit_Tests():
             
         def test_exits():
             room = Room()
-            assert room.move("north") == 11
+
+            next_room = room.move("north")
+            assert isinstance(next_room, SpiderRoom), "Moving north should transition to SpiderRoom."
+            assert next_room.room_num == 11, "SpiderRoom should be room_num 11"
             assert room.move("east") == 14
             assert room.move("west") == 16
             assert room.move("south") is None
+
+def describe_spider_room():
+
+    def test_room_to_spider_room_transition():
+        room = Room()
+        spider_room = SpiderRoom()
+        next_room = room.move("north")
+        assert isinstance(next_room, SpiderRoom), "Moving north should transition to SpiderRoom."
+    
+    
+    def the_spider_room_is_room_11():
+        room = Room()
+        next_room = room.move("north")
+        assert isinstance(next_room, SpiderRoom), "Moving north should transition to SpiderRoom."
+
+
+    def test_spider_room_actions():
+        spider_room = SpiderRoom()
+        player = MagicMock()
+        player.has_item.return_value = True  
+
+        with patch("builtins.input", side_effect=["use lamp"]): 
+            spider_room.enter(player)
+
+        assert spider_room.spiders_cleared is True, "Spiders should be cleared after using the lamp."

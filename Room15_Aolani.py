@@ -101,9 +101,12 @@ class Room:
                 print(f"There is a {obj.name} here.")
 
 
-    def move(self, direction):
+    def move(self, direction, return_instance=True):
         if direction == "north":
-            return 11  
+            if return_instance:
+                return SpiderRoom()
+            else:
+                return 11 
         elif direction == "east":
             return 14  
         elif direction == "west":
@@ -206,3 +209,37 @@ class Room:
             if obj.name.lower() == item_name.lower():
                 return obj
         return None
+    
+
+
+class SpiderRoom(Room):
+    def __init__(self):
+        super().__init__()
+        self.room_num = 11
+        self.description = (
+            "You have entered the north exit which is full of spiders and tarantulas. You feel spiders crawling on your skin and the walls feel like they are closing in. How will you get out? "
+        )
+
+        self.exits = ["south"]
+        self.spiders_cleared = False
+
+    
+    def enter(self, player):
+        print("self.description")
+        print("The spiders block your path and escaping will be difficult as there are poisonous spiders all around you.")
+
+
+        while not self.spiders_cleared:
+            command = input("> ").lower().strip()
+            if command == "use lamp":
+                if player.has_item("Lamp"):
+                    print("You can use the lamp to light up a path for you to exit!")
+                    self.spiders_cleared = True
+                    self.exits.append("north")
+                else:
+                    print("You don't have a lamp! The spiders are closing in.")
+
+        print("You have lite up the passway and are now able to move to the next room. ")
+        
+
+
