@@ -32,19 +32,20 @@ class Room:
     def __init__(self):
         self.room_num = 0
         self.description = (
-            "You walk down a hall an it gets narrow.\n"
-            "You now are having to crawl.\n"
-            ".\n"
-            "You now unable to turn around and hearing a ranging river.\n"
-            ".\n"
-            ".\n"
-            "As you near the end of the tunnel and enter into a narrow chasm.\n"
-            "Walking to the edge you see a narrow bridge with a ticket booth in front.\n"
+            
+        "You walk down a dimly lit hall, and the walls begin to close in around you.\n"
+        "The passage grows so narrow that you are forced to crawl, each movement echoing in the confined space.\n"
+        "The sound of a roaring river grows louder, reverberating through the tunnel.\n"
+        "\n"
+        "Unable to turn back, you press forward, emerging into a narrow chasm.\n"
+        "Ahead, a narrow bridge stretches over the unseen river below.\n"
+        "Blocking your path is a solitary ticket booth, standing eerily in the dim light.\n"
+    
             
             
         )
         # other room setup - add the lamp and set up the exits.
-        dice = d_("Dice", "A 20 sided die that is glowing is ", True, "off", True)
+        dice = d_("Dice", "You hear a clatter and see a glowing dice roll from behind you, stopping at your feet.", True, "off", True)
         self.objects.append(dice)
         
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
@@ -114,7 +115,7 @@ class Room:
     def move(self, direction, player):
         if direction in ["ticket-booth"]:
             print("You approach the ticket booth.")
-            print("A sign reads: 'ROLL TO PASS. SUCCESSFUL ROLL REQUIRED.'")
+            print("A sign reads: 'ROLL TO PASS.'")
 
             # Has the dice
             if not player.has_item("Dice"):
