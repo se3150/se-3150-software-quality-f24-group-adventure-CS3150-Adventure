@@ -18,7 +18,6 @@ class Candle(Object):
         super().__init__(name, description, can_be_gotten, state, visible)
 
     def use(self): 
-        #need to check if the user picked up the lighter in the room first before being able to light the candle
         if "Lighter" in object:
             if self.state == "off":
                 self.state = "Lit"
@@ -32,11 +31,9 @@ class Candle(Object):
             
 class Lighter(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
-        # Call the superclass constructor
         super().__init__(name, description, can_be_gotten, state, visible)
 
     def use(self):
-        # The lighter toggles its state when you 'use' it.
         if self.state == "off":
             self.state = "on"
             print(f"{self.name} is now on.")
