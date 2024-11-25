@@ -1,28 +1,26 @@
 from object import Object
 from player import Player
-import random
 import sys  # For exiting the game
 
 
 # this is how you create a new object. You inherit from class Object and override the 'use' function. 
-    
-class d_(Object):
+class Lever(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
         # Call the superclass constructor
+        name = "Lever"
+        can_be_gotten = False
+        visible = False
         super().__init__(name, description, can_be_gotten, state, visible)
 
-    def use(self, player):
-        value = random.randint(1, 100)
-        if value % 2 != 0:  
-            print(f'You rolled {value}. Your health has increased!')
-            player.health += value
-        else:  
-            print(f'You rolled {value}. Your health has decreased!')
-            player.health -= value
-
-        
-        print(f'Your current health is now {player.health}.')
-        
+    def use(self):
+        # the lamp toggles when you 'use' it. 
+        if self.state == "off":
+            self.state = "on"
+            print(f"{self.name} is now on.")
+        else:
+            self.state = "off"
+            print(f"{self.name} is now off.")
+            ("lever", "An old rotting wooden lever, connected to the cage", False, "off", False)
 
 
 class Room:
@@ -30,28 +28,21 @@ class Room:
     objects = []
 
     def __init__(self):
-        self.room_num = 0
+        self.room_num = 25
         self.description = (
-            
-        "You walk down a dimly lit hall, and the walls begin to close in around you.\n"
-        "The passage grows so narrow that you are forced to crawl, each movement echoing in the confined space.\n"
-        "The sound of a roaring river grows louder, reverberating through the tunnel.\n"
-        "\n"
-        "Unable to turn back, you press forward, emerging into a narrow chasm.\n"
-        "Ahead, a narrow bridge stretches over the unseen river below.\n"
-        "Blocking your path is a solitary ticket booth, standing eerily in the dim light.\n"
-    
-            
-            
+            "You look around the dark room, lit only by a dying lamp in the corner.\n"
+            "There are various piles of junk and rotting wood chairs strewn about the walls.\n"
+            "All the walls surrounding you look to be solid, leaving only the way you came to get back out\n"
+            "There must be another doorway to move forward right?\n"
+            "From the corner opposite the lamp you faint a faint whimper, but cant make out much\n"
+            "only the faint outline of a medium sized cage in the corner.\n"
         )
-        # other room setup - add the lamp and set up the exits.
-        dice = d_("Dice", "You hear a clatter and see a glowing dice roll from behind you, stopping at your feet.", True, "off", True)
-        self.objects.append(dice)
+        # other room setup - set up the exits.
+        lever = Lever("Lever", "An old rotting wooden lever, connected to the cage", False, "off", False)
+        self.objects.append(lever)
         
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = []
-
-        
+        self.exits = ["west", "up"]
 
 
 
@@ -72,9 +63,13 @@ class Room:
                 other_part = ""
 
             #Do the command - You should make helper functions for each of these in your room as well.
-            if command_base in ["ticket-booth"]:
-                self.move(player)
+            if command_base in ["move", "go"]:
+                next = self.move(other_part)
+                if(next != None):
+                    return next
                 
+            elif command_base == "use":
+                self.use(other_part, player)
             
             elif command_base == "look":
                 self.look(other_part, player)
@@ -110,54 +105,33 @@ class Room:
         print(self.description)
         if self.objects:
             for obj in self.objects:
-                print(f"There is a {obj.name} here.")
+                if obj.visible != False:
+                    print(f"There is a {obj.name} here.")
 
-    def move(self, direction, player):
-        if direction in ["ticket-booth"]:
-            print("You approach the ticket booth.")
-            print("A sign reads: 'ROLL TO PASS.'")
-
-            # Has the dice
-            if not player.has_item("Dice"):
-                print("You need the dice to proceed.")
-                return
-
-            # Ask the player if they want to roll the dice
-            while True:
-                choice = input("Do you want to roll the dice? (yes/no): ").lower().strip()
-                if choice == "yes":
-                    dice = next(obj for obj in player.inventory if obj.name.lower() == "dice")
-                    dice.use(player)
-
-                    print("The gate opens, and new paths are revealed!")
-                    self.add_exits() 
-                    return
-                    
-                elif choice == "no":
-                    print("You decide not to roll the dice for now.")
-                    return
-                
-                else:
-                    print("Please answer 'yes' or 'no'.")
-
+    def move(self, direction):
+        if direction in ["up", "u"]:
+            print("You return back to one of the first rooms in the cave")
+            return "up"
+        elif direction in ["west", "door"]:
+            if self.objects[0].state == "on":
+                print("You follow the dog through the door")
+                return "west"
+            else:
+                print("There is only a solid wall in front of you")
+                return None
         else:
             print("You can't go that way.")
             return None
-    
-    def add_exits(self):
-        if "west" not in self.exits:
-            self.exits.append("west")
-        if "south" not in self.exits:
-            self.exits.append("south")
-        print(f"New exits available: {', '.join(self.exits)}")
 
     def look(self, target, player):
         if(target == None or target == "" ):
             self.describe_room()
             return
 
-        if target == "ticket-booth":
-            print("You see a sign, 'ROLL TO PASS'. You also see dice that are on the ground.")
+        if target == "cage":
+            print("You approach to cage, and see there is a dog in the caging whimpering. Along the side of the cage you see a\n"
+                  "rotting wooden lever attached")
+            self.objects[0].visible = True
         else:
             # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
@@ -166,6 +140,18 @@ class Room:
                     if(obj.state != None): 
                         print(f"The {obj.name} is {obj.state}")                   
                     return
+                
+    def use(self, target, player):
+        #Check to see if player has found the lever, and if so, use it.
+        if target == "lever" or "Lever":
+            if self.objects[0].visible == True:
+                self.objects[0].use()
+                if self.objects[0].state == "on":
+                    print("As the cage door swings open as does a hidden door to your west.\n"
+                        "as the wall to west rises it reveals a new pathway. Before you can think\n"
+                        "about your next move the dogs darts down the newly opened passage away from you.\n")
+            elif self.objects[0].visible == False:
+                print("You cannot see lever anywhere. Perhaps there is one here if you look around?")
         
     # this code could also probably be used verbatim
     def get(self, item_name, player):
@@ -173,7 +159,7 @@ class Room:
         for obj in self.objects:
             if obj.name.lower() == item_name.lower():  # Case-insensitive comparison
                 if not obj.can_be_gotten:
-                    print(f"The {obj.name} cannot be taken.")
+                    print(f"The {obj.name} cannot be taken, but perhaps it can still be used")
                     return
 
                 # Check if the player already has the item in their inventory
@@ -190,17 +176,17 @@ class Room:
         # If the item was not found in the room
         print(f"There is no {item_name} here or you can't get it.")
     
-        def drop(self, item_name, player):
-            # Check if the item is in the player's inventory
-            for item in player.inventory:
-                if item.name.lower() == item_name.lower():  # Case-insensitive comparison
-                    player.inventory.remove(item)
-                    self.objects.append(item)
-                    print(f"You drop the {item.name} on the ground.")
-                    return 
+    def drop(self, item_name, player):
+        # Check if the item is in the player's inventory
+        for item in player.inventory:
+            if item.name.lower() == item_name.lower():  # Case-insensitive comparison
+                player.inventory.remove(item)
+                self.objects.append(item)
+                print(f"You drop the {item.name} on the ground.")
+                return 
 
-            # If the item was not found in the player's inventory
-            print(f"You can't drop {item_name}. You don't have that.")
+        # If the item was not found in the player's inventory
+        print(f"You can't drop {item_name}. You don't have that.")
 
     def show_inventory(self, player):
         player.show_inventory()
@@ -214,10 +200,10 @@ class Room:
             sys.exit(0)
 
     def show_help(self):
-        print("Available commands: ticket-booth, look, get, take, drop, inventory, stats, quit, help")
+        print("Available commands: move, go, look, get, take, use, drop, inventory, stats, quit, help")
 
     def show_hint(self):
-        print("You should approach the ticket-booth.")
+        print("This is a fairly unasuming room. Perhaps look around and you may find something?")
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")

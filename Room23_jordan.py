@@ -1,59 +1,59 @@
 from object import Object
 from player import Player
-import random
 import sys  # For exiting the game
 
 
-# this is how you create a new object. You inherit from class Object and override the 'use' function. 
-    
-class d_(Object):
+class ThinkBee(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
-        # Call the superclass constructor
         super().__init__(name, description, can_be_gotten, state, visible)
 
-    def use(self, player):
-        value = random.randint(1, 100)
-        if value % 2 != 0:  
-            print(f'You rolled {value}. Your health has increased!')
-            player.health += value
-        else:  
-            print(f'You rolled {value}. Your health has decreased!')
-            player.health -= value
+    def use(self):
+        fin = open("./bee.txt", "r")
 
-        
-        print(f'Your current health is now {player.health}.')
-        
+        for line in fin:
+            if line != "\n" and line != "  \n":
+                print(line)
+
+class Splendor(Object):
+    def __init__(self, name, description, can_be_gotten, state, visible):
+        super().__init__(name, description, can_be_gotten, state, visible)
+
+    def use(self):
+        print("The Splendor if Tranquil Waters is A scepter around which swirls pure water.\nIn days long past, it once symbolized the highest authority over the seas.")
+        print("")
+        print("The sceptre glows and the guests of the Salon Solitaire appear.")
+        print("One introduces itself as Gentilhomme Usher, it is an octopus with a ball head")
+        print("The second a bubbly seahorse that introduces itself as Surintendante Chevalmarin")
+        print("And finally the third. A crab named Mademoiselle Crabaletta.")
+        print()
+        print("The guests do nothing besides float around and make weird noises.")
+
 
 
 class Room:
 
     objects = []
 
-    def __init__(self):
-        self.room_num = 0
+    def __init__ (self):
+        self.room_num = 23
         self.description = (
-            
-        "You walk down a dimly lit hall, and the walls begin to close in around you.\n"
-        "The passage grows so narrow that you are forced to crawl, each movement echoing in the confined space.\n"
-        "The sound of a roaring river grows louder, reverberating through the tunnel.\n"
-        "\n"
-        "Unable to turn back, you press forward, emerging into a narrow chasm.\n"
-        "Ahead, a narrow bridge stretches over the unseen river below.\n"
-        "Blocking your path is a solitary ticket booth, standing eerily in the dim light.\n"
-    
-            
-            
+            "You walk into a room. You hear some music playng\n"
+            "It kind of sounds like an opera piece by the \n"
+            "Romantic era french composer Jules Massenet...\n"
+            "You think it may be in your mind and you think\n"
+            "you are probably going crazy. The room is dimly lit.\n"
+            "The music can also be metal. Six and one half dozen does\n"
+            "the other am I right?"
         )
-        # other room setup - add the lamp and set up the exits.
-        dice = d_("Dice", "You hear a clatter and see a glowing dice roll from behind you, stopping at your feet.", True, "off", True)
-        self.objects.append(dice)
-        
-        #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = []
 
-        
+        bee=ThinkBee("Think bee", "A odd looking orb speaking an odd language.", True, "off", True )
+        sceptre = Splendor("The Splendor of Tranquil Waters", "A glowing cane readiating power", True, "off", True)
 
 
+        self.objects.append(bee)
+        self.objects.append(sceptre)
+
+        self.exits=["up", "right"]
 
     def enter(self, player):
 
@@ -72,9 +72,10 @@ class Room:
                 other_part = ""
 
             #Do the command - You should make helper functions for each of these in your room as well.
-            if command_base in ["ticket-booth"]:
-                self.move(player)
-                
+            if command_base in ["move", "go"]:
+                next = self.move(other_part)
+                if(next != None):
+                    return next
             
             elif command_base == "look":
                 self.look(other_part, player)
@@ -99,65 +100,48 @@ class Room:
             
             elif command_base == "hint":
                 self.show_hint()
+            
+            elif command_base in ["use"]:
+                name = parts[1:]
+                true_name = ""
+                for word in name:
+                    true_name = true_name + word
+                base = False
+                for obj in self.objects:
+                    if true_name.lower() == obj.name.lower():
+                        print()
+                        obj.use()
+                        base = True
+                if base == False:
+                    print("Unknown command")
             else:
                 self.unknown_command()
 
-
-
-
-    # Helper functions
     def describe_room(self):
         print(self.description)
         if self.objects:
             for obj in self.objects:
                 print(f"There is a {obj.name} here.")
 
-    def move(self, direction, player):
-        if direction in ["ticket-booth"]:
-            print("You approach the ticket booth.")
-            print("A sign reads: 'ROLL TO PASS.'")
-
-            # Has the dice
-            if not player.has_item("Dice"):
-                print("You need the dice to proceed.")
-                return
-
-            # Ask the player if they want to roll the dice
-            while True:
-                choice = input("Do you want to roll the dice? (yes/no): ").lower().strip()
-                if choice == "yes":
-                    dice = next(obj for obj in player.inventory if obj.name.lower() == "dice")
-                    dice.use(player)
-
-                    print("The gate opens, and new paths are revealed!")
-                    self.add_exits() 
-                    return
-                    
-                elif choice == "no":
-                    print("You decide not to roll the dice for now.")
-                    return
-                
-                else:
-                    print("Please answer 'yes' or 'no'.")
-
+    def move(self, direction):
+        if direction in ["down", "d", "well"]:
+            print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
+            return "down"
+        elif direction in ["north"]:
+            return "north"
+        elif direction in ["east"]:
+            return "east"
         else:
             print("You can't go that way.")
             return None
-    
-    def add_exits(self):
-        if "west" not in self.exits:
-            self.exits.append("west")
-        if "south" not in self.exits:
-            self.exits.append("south")
-        print(f"New exits available: {', '.join(self.exits)}")
 
     def look(self, target, player):
         if(target == None or target == "" ):
             self.describe_room()
             return
 
-        if target == "ticket-booth":
-            print("You see a sign, 'ROLL TO PASS'. You also see dice that are on the ground.")
+        if target == "well":
+            print("Upon closer inspection, the liquid is not water -- it's pure magic. It seems the well may be a portal to somewhere.")
         else:
             # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
@@ -214,10 +198,13 @@ class Room:
             sys.exit(0)
 
     def show_help(self):
-        print("Available commands: ticket-booth, look, get, take, drop, inventory, stats, quit, help")
+        print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help")
 
     def show_hint(self):
-        print("You should approach the ticket-booth.")
+        print("This is the starting room. You probably ought to get the lamp and go down the well.")
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
+    
+    
+
