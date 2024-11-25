@@ -7,7 +7,7 @@ class QuizReward(Object):
         super().__init__(name, description, can_be_gotten, state, visible)
 
     def use(self):
-        print(f"The {self.name} is shimmering but doesn't seem usable right now.")
+        print(f"Jeff’s words echoed… There’s a time and place for everything, but not now.")
 
 
 class Room:
@@ -22,7 +22,7 @@ class Room:
             {"question": "Is Python a programming language? (True/False)", "answer": True, "hint": "Think about what you're coding in!"},
             {"question": "Does 2 + 2 equal 5? (True/False)", "answer": False, "hint": "Basic math can solve this!"},
             {"question": "Is Earth the third planet from the Sun? (True/False)", "answer": True, "hint": "Solar system basics."}
-            
+
         ]
         self.question_index = 0
 
