@@ -6,36 +6,42 @@ import sys  # For exiting the game
 class Cups(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
         super().__init__(name, description, can_be_gotten, state, visible)
+        self.cups = {'gold': "An ornate golden chalice, with shining gemstones all around the rim",
+                     'bone': "A cup seemingly carved out of bone, with small thorns protruding from it",
+                     'wood': "A simple, well made wooden cup",
+                     'mug': "A mug with the phrase '#1 Boss' printed on it"}
 
     def use(self, player):
-        print("Enter a number 1-4 to choose a cup to drink out of\n"
+        print("Enter the name of a cup to drink from it\n"
               "Or type back to not drink from any\n"
-              "The cups are:\n"
-              "1. An ornate golden chalice, with shining gemstones all around the rim\n"
-              "2. A cup seemingly carved out of bone, with small thorns protruding from it\n"
-              "3. A simple, well made wooden cup\n"
-              "4. A mug with the phrase \"#1 Boss\" printed on it\n")
-        choice = input().lower().strip()
-        while choice not in ['1', '2', '3', '4', 'back']:
-            choice = input("Please enter '1', '2', '3', '4', or 'back'\n")
+              "The cups are:")
+        for key in self.cups:
+            print(key, ": ", self.cups[key], sep="")
+        choice = input("> ").lower().strip()
+        while choice not in self.cups and choice != 'back':
+            print("Please enter " +', '.join("\"" + key + "\""  for key in self.cups) + ", or \"back\"")
+            choice = input("> ")
         match choice:
-            case '1' | '2' | '4':
-                print("As the liquid slides down your throat, you feel a burning sensation in your stomach, and you begin to age rapidly\n"
-                      "You hear the skull to the side say:\n"
-                      "\"You chose... poorly\"\n")
-                player.health -= 70
-                player.conditions.append("old")
-                self.visible = False
-            case '3':
-                print("As the liquid slides down your throat, you feel a wonderful warm sensation spread through your body\n"
+            case 'wood':
+                print("As the liquid slides down your throat, you feel a comfortably warm sensation spread through your body\n"
                       "and you feel stronger than you ever have before\n"
                       "You hear the skull to the side say:\n"
-                      "\"Good job dude\"\n")
+                      "\"Good job dude\"\n"
+                      "(You have gained 150 health)\n"
+                      "(You have gained 150 score)")
                 player.health += 150
                 player.score += 150
                 self.visible = False
             case 'back':
                 print("You back away from the cups")
+            case _:
+                print("As the liquid slides down your throat, you feel a burning sensation in your stomach, and you begin to age rapidly\n"
+                      "You hear the skull to the side say:\n"
+                      "\"You chose... poorly\"\n"
+                      "(You have lost 70 health)")
+                player.health -= 70
+                # player.conditions.append("old")
+                self.visible = False
                 
 
 class Skull(Object):
@@ -54,9 +60,9 @@ class Room:
     def __init__(self):
         self.room_num = 0
         self.description = (
-            "You enter this room, and see exits to your north and south, and a ladder going up.\n"
+            "You enter this room, and see an exit to your north, and a ladder going up.\n"
             "All around the room, massive torches cast light to reveal a table in the center of the room.\n"
-            "4 cups and a skull sit on the table, each cup filled halfway full.\n"
+            "4 cups and a skull sit on the table, each cup filled halfway full."
         )
         # other room setup - add the lamp and set up the exits.
         cups = Cups("cups", "4 cups on a table in the center of the room", False, None, True)
@@ -93,7 +99,8 @@ class Room:
                 self.look(other_part, player)
             
             elif command_base == 'use':
-                self.use(other_part, player)
+                if self.use(other_part, player) == 'dead':
+                    return
 
             elif command_base in ["get", "take"]:
                 self.get(other_part, player)
@@ -123,7 +130,8 @@ class Room:
         print(self.description)
         if self.objects:
             for obj in self.objects:
-                print(f"There is a {obj.name} here.")
+                if obj.visible:
+                    print(f"There is a {obj.name} here.")
 
     def move(self, direction):
         if direction in ["up", "u"]:
@@ -143,13 +151,6 @@ class Room:
         if(target == None or target == ""):
             self.describe_room()
             return
-
-        if target == "cups":
-            print("You see 4 cups in front of you: \n"
-                  "1. An ornate golden chalice, with shining gemstones all around the rim\n"
-                  "2. A cup seemingly carved out of bone, with small thorns protruding from it\n"
-                  "3. A simple, well made wooden cup\n"
-                  "4. A mug with the phrase \"#1 Boss\" printed on it\n")
         else:
             # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
@@ -173,6 +174,8 @@ class Room:
             if target == obj.name and obj.visible:
                 if target == 'cups':
                     obj.use(player)
+                    if player.health < 0:
+                        return 'dead'
                 else:
                     obj.use()                 
                 return
@@ -232,3 +235,8 @@ class Room:
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
+
+if __name__ == "__main__":  # For testing
+    room = Room()
+    player = Player("me", 100, "", 5)
+    room.enter(player)
