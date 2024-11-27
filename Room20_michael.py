@@ -13,7 +13,7 @@ class Room:
     objects = []
 
     def __init__(self):
-        self.room_num = 1
+        self.room_num = 20
         self.description = (
             "You find yourself in a large room with soft grass covering the ground.\n"
             "A small hill rises in the middle of the room, and standing atop it is a peculiar creature.\n"
@@ -54,6 +54,9 @@ class Room:
 
             elif command_base == "high-five" and other_part.lower() == "dave":
                 self.high_five_dave()
+
+            elif command_base == "kick" and other_part.lower() == "dave":
+                self.kick_dave()
 
             elif command_base == "inventory":
                 self.show_inventory(player)
@@ -124,6 +127,11 @@ class Room:
         print("You walk up to Dave and raise your hand. Dave enthusiastically high-fives you!")
         print("You hear a click as the exits unlock.")
         self.exits_locked = False
+
+    def kick_dave(self):
+        print("Not wanting to be forced to make friends with this weird creature, you instead decide to teach him a lesson with a forceful kick!")
+        print("Dave looks at you with sadness in his eyes as he vanishes in a puff of smoke, you are now locked in here forever...")
+        self.quit_game(Player)
 
     def show_inventory(self, player):
         player.show_inventory()
