@@ -72,7 +72,7 @@ Room:16 - Marco Raro Moreno
  east,15
  south,17
 
-Room:17 - Carson Richards
+Room:17 - CarsonR Richards
  north,14
  west,18
  up,11

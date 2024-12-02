@@ -92,7 +92,7 @@ class Room():
             return "down"
         elif direction == "south":
             print("You exited the room to enter Room 22")
-            return "down"
+            return "south"
         else:
             print("You can't go that way.")
             return None
