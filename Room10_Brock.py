@@ -1,23 +1,29 @@
 from object import Object
 from player import Player
 import sys  # For exiting the game
+import random
+import string
 
 
-# this is how you create a new object. You inherit from class Object and override the 'use' function. 
-class Lamp(Object):
+class Chest(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
         # Call the superclass constructor
         super().__init__(name, description, can_be_gotten, state, visible)
 
     def use(self):
-        # the lamp toggles when you 'use' it. 
-        if self.state == "off":
-            self.state = "on"
-            print(f"{self.name} is now on.")
+        # Generate a random string and prompt the user to copy it
+        random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=100))
+        print("To open the chest, you must copy the following string exactly:")
+        print(random_string)
+        
+        user_input = input("Enter the string: ")
+
+        if user_input == random_string:
+            print("The chest opens with a creak, revealing... nothing. It's a dead end.")
+            print("You could have just turned back.")
         else:
-            self.state = "off"
-            print(f"{self.name} is now off.")
-            ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
+            print("The chest remains closed. You must enter the string exactly as shown.")
+            self.use()
 
 
 class Room:
@@ -27,15 +33,15 @@ class Room:
     def __init__(self):
         self.room_num = 0
         self.description = (
-            "You awaken, wondering how you got here. Some evil spell has been cast upon you!\n"
-            "You are sitting inside a dark room with stone floors, walls, and a low ceiling.\n"
-            "There are no doors and no windows. Water drips noisily from the ceiling.\n"
-            "A circular 'well' sits in the center of the room, the surface of the water\n"
-            "glows with an unearthly light.\n"
+            "In the shadowy embrace of the room, only a solitary chest dares to defy the darkness.\n"
+            "It sits in the corner, like a sentinel of secrets, its presence a beacon in the void.\n"
+            "The air is thick with mystery, as if the very walls whisper tales of forgotten lore.\n"
+            "You feel the weight of an ancient spell upon you, binding you to this enigmatic chamber.\n"
+            "The chest gleams with a faint, ethereal glow, as if it holds the light of a thousand stars within.\n"
         )
         # other room setup - add the lamp and set up the exits.
-        lamp = Lamp("Lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
-        self.objects.append(lamp)
+        chest = Chest("Chest", "A mysterious chest in the corner of the room.", False, "closed", True)
+        self.objects.append(chest)
         
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
         self.exits = ["down"]
@@ -46,6 +52,11 @@ class Room:
 
         # step 1 - Print the room description
         self.describe_room()
+
+        # New step: Interact with the chest
+        for obj in self.objects:
+            if isinstance(obj, Chest):
+                obj.use()
 
         # step 2 - make your own command loop - watch carefully about how to parse commands:
         while True:
@@ -87,12 +98,8 @@ class Room:
             
             elif command_base == "hint":
                 self.show_hint()
-            elif command_base == "fasttravel":
-                return "fasttravel"
             else:
                 self.unknown_command()
-
-
 
 
     # Helper functions
@@ -176,7 +183,7 @@ class Room:
         print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help")
 
     def show_hint(self):
-        print("This is the starting room. You probably ought to get the lamp and go down the well.")
+        print("You are in an almost empty room. There is a chest in the corner that seems important. Maybe you should try to open it?")
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
