@@ -132,5 +132,8 @@ class Room:
     def show_help(self):
         print("Available commands: move, go, look, get, take, use, quit, help")
 
+    def show_hint(self):
+        print("You notice a bag filled with a white powdery substance that is nailed to the floor.")
+
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options.")
