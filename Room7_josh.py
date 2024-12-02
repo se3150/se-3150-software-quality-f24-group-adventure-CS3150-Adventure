@@ -72,8 +72,10 @@ class Room:
                 other_part = ""
 
             #Do the command - You should make helper functions for each of these in your room as well.
-            if command_base in ["ticket-booth"]:
-                self.move(player)
+            if command_base in ["move", "go"]:
+                next = self.move(other_part)
+                if(next != None):
+                    return next
                 
             
             elif command_base == "look":
@@ -99,6 +101,9 @@ class Room:
             
             elif command_base == "hint":
                 self.show_hint()
+
+            elif command_base == "ticket-booth":
+                self.ticket_booth(player)
             else:
                 self.unknown_command()
 
@@ -112,18 +117,27 @@ class Room:
             for obj in self.objects:
                 print(f"There is a {obj.name} here.")
 
-    def move(self, direction, player):
-        if direction in ["ticket-booth"]:
-            print("You approach the ticket booth.")
-            print("A sign reads: 'ROLL TO PASS.'")
+    def move(self, direction):
+        if direction == "west":
+            return "west"
+        elif direction == "south":
+            return "south"
+        else:
+            print("You can't go that way.")
+            return None
+        
+            
 
-            # Has the dice
+    def ticket_booth(self, player):
+            
             if not player.has_item("Dice"):
                 print("You need the dice to proceed.")
                 return
 
             # Ask the player if they want to roll the dice
             while True:
+                print("You approach the ticket booth.")
+                print("A sign reads: 'ROLL TO PASS.'")
                 choice = input("Do you want to roll the dice? (yes/no): ").lower().strip()
                 if choice == "yes":
                     dice = next(obj for obj in player.inventory if obj.name.lower() == "dice")
@@ -140,10 +154,7 @@ class Room:
                 else:
                     print("Please answer 'yes' or 'no'.")
 
-        else:
-            print("You can't go that way.")
-            return None
-    
+            
     def add_exits(self):
         if "west" not in self.exits:
             self.exits.append("west")
@@ -214,7 +225,7 @@ class Room:
             sys.exit(0)
 
     def show_help(self):
-        print("Available commands: ticket-booth, look, get, take, drop, inventory, stats, quit, help")
+        print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help")
 
     def show_hint(self):
         print("You should approach the ticket-booth.")
