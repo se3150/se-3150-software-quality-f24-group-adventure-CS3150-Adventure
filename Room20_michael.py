@@ -131,7 +131,7 @@ class Room:
     def kick_dave(self):
         print("Not wanting to be forced to make friends with this weird creature, you instead decide to teach him a lesson with a forceful kick!")
         print("Dave looks at you with sadness in his eyes as he vanishes in a puff of smoke, you are now locked in here forever...")
-        self.quit_game(Player)
+        Player.health = 0
 
     def show_inventory(self, player):
         player.show_inventory()
@@ -145,7 +145,7 @@ class Room:
             sys.exit(0)
 
     def show_help(self):
-        print("Available commands: move, go, look, get, take, high-five, inventory, stats, quit, help")
+        print("Available commands: move, go, look, get, take, high-five dave, kick dave, inventory, stats, quit, help")
 
     def show_hint(self):
         print("Dave seems eager for a high-five. Try giving him one.")
