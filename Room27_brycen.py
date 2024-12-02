@@ -48,6 +48,16 @@ class Room:
             "You can't help but feel a sense of wonder and foreboding as you take in the vast expanse of knowledge contained within these walls.\n"
             "Yet, an uneasy tension hangs in the air, as if the library itself is alive and watching, waiting to reveal its secrets to those deemed worthy—or to punish those who are not.\n"
         )
+
+        self.move_from_entrance_description = (
+            "\nYou start to enter into the libray and the owl lets out war screeches.\n"
+            "Startled, you look up to see the owl swoop from its perch and scale 10 times in size.\n"
+            "Now towering over you, the owl demands to know your reasoning for entering.\n"
+            "You can either:\n"
+            "'Show' the owl your piece of paper from the previous room\n"
+            "OR\n"
+            "'Lie' and say you want to explore the vast knowledge of tomes in the Owl's collection\n"
+        )
         
         # other room setup - add the lamp and set up the exits.
         book = Book("Book", "A dusty old thick book, with an ominous glow from within the pages.", True, "off", True)
@@ -207,15 +217,7 @@ class Room:
                 print(f"There are {obj.name}s here. Which one...")
 
     def move_from_entrance(self, player):
-        print (
-            "\nYou start to enter into the libray and the owl lets out war screeches.\n"
-            "Startled, you look up to see the owl swoop from its perch and scale 10 times in size.\n"
-            "Now towering over you, the owl demands to know your reasoning for entering.\n"
-            "You can either:\n"
-            "'Show' the owl your piece of paper from the previous room\n"
-            "OR\n"
-            "'Lie' and say you want to explore the vast knowledge of tomes in the Owl's collection\n"
-        )
+        print(self.move_from_entrance_description)
         ans = input("What do you do? (show/lie) ").lower().strip()
         if ans.startswith('s'):
             self.showNote(player)
