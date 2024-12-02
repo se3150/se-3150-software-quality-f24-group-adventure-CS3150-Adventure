@@ -5,7 +5,7 @@ class Room:
             "This is a placeholder room - waiting for Connor to finish.\n"
             "Your exits are: up, east\n"
         )
-        self.exits = ["up", "east"]
+        self.exits = ["up", "east", "test"]
 
     def enter(self, player):
         print(self.description)
