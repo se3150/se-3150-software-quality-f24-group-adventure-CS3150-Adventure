@@ -73,7 +73,9 @@ class Room:
 
             #Do the command - You should make helper functions for each of these in your room as well.
             if command_base in ["ticket-booth"]:
-                self.move(player)
+                next = self.move(other_part, player)
+                if(next != None):
+                    return next
                 
             
             elif command_base == "look":
