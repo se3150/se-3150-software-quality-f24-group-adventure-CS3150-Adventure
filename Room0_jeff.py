@@ -87,6 +87,8 @@ class Room:
             
             elif command_base == "hint":
                 self.show_hint()
+            elif command_base == "fasttravel":
+                return "fasttravel"
             else:
                 self.unknown_command()
 

@@ -128,18 +128,35 @@ def main():
  
     # Step 6: Main game loop
     # start in room 0
+    # Main game loop
     current_room = 0
     while True:
+        # Get the result from the room's enter method
+        result = rooms[current_room].enter(player)
 
-        #go to the next room which results in giving us the subsequent room
-        next_direction = rooms[current_room].enter(player)
-        
-        # Check if the next direction is valid for the current room
+        # Handle fasttravel
+        if result == "fasttravel":
+            while True:
+                try:
+                    target_room = int(input("Enter the room number you want to fast travel to: "))
+                    if target_room < 0 or target_room >= len(rooms):
+                        print(f"Room {target_room} does not exist. Please enter a valid room number.")
+                    else:
+                        print(f"You fast travel to Room {target_room}.")
+                        current_room = target_room
+                        break
+                except ValueError:
+                    print("Invalid input. Please enter a valid room number.")
+            continue
+
+        # Handle standard movement commands
+        next_direction = result
+
         if next_direction not in game_map[current_room]:
             print(f"room {current_room} tried to go {next_direction} and that's not in the game_map:")
             print(game_map[current_room])
             sys.exit(0)
-        
+
         # Set the current room to the one connected in the specified direction
         current_room = game_map[current_room][next_direction]
 
