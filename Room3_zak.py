@@ -1,6 +1,6 @@
 from object import Object
 from player import Player
-import sys  # For exiting the game 
+import sys # For exiting the game 
 
 class Lever(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
