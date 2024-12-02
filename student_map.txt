@@ -5,7 +5,7 @@ Room:1 - Hector Adame
  south,22
  down,2
 
-Room:2 - Broxton Alexander
+Room:2 - Brox Alexander
  up,1
  south,3
  west,18
@@ -44,12 +44,12 @@ Room:9 - Kyleigh Hill
 Room:10 - Brock Houston
  north,11
 
-Room:11 - Paysen Hudson
+Room:11 - Jeff
  south,23
  west,22
  down,17
 
-Room:12 - Thomas Jensen
+Room:12 - Tom Jensen
  east,11
  west,13
  down,3
@@ -72,7 +72,7 @@ Room:16 - Marco Raro Moreno
  east,15
  south,17
 
-Room:17 - Carson Richards
+Room:17 - CarsonR Richards
  north,14
  west,18
  up,11
