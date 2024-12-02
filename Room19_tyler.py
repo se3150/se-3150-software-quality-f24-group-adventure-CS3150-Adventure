@@ -4,7 +4,7 @@ import sys  # For exiting the game
 
 import random
 
-class CasinoRoom:
+class Room:
     def __init__(self):
         self.room_num = 19
         self.description = (
