@@ -16,7 +16,7 @@ class OxygenRecycler(Object):
             print("Oxygen Recycler shutdown. Warning: Oxygen levels decreasing!")
 
 
-class SpaceStation:
+class Room:
     objects = []
 
     def __init__(self):
