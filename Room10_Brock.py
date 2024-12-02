@@ -31,7 +31,7 @@ class Room:
     objects = []
 
     def __init__(self):
-        self.room_num = 0
+        self.room_num = 10
         self.description = (
             "In the shadowy embrace of the room, only a solitary chest dares to defy the darkness.\n"
             "It sits in the corner, like a sentinel of secrets, its presence a beacon in the void.\n"
@@ -110,9 +110,9 @@ class Room:
                 print(f"There is a {obj.name} here.")
 
     def move(self, direction):
-        if direction in ["down", "d", "well"]:
+        if direction in ["north","n","up","u"]:
             print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
-            return "down"
+            return "up"
         else:
             print("You can't go that way.")
             return None
