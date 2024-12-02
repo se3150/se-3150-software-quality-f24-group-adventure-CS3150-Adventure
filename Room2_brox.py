@@ -84,7 +84,7 @@ class Room:
             self.describe_room()
             return
 
-        if target in ["box", "brox", "brox box", "broxbox"]:":
+        if target in ["box", "brox", "brox box", "broxbox"]:
             print("Fire looking box, you should use it")
         else:
             for obj in self.objects + player.inventory:
