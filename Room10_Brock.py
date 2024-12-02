@@ -15,7 +15,7 @@ class Chest(Object):
         random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=100))
         print("To open the chest, you must copy the following string exactly:")
         print(random_string)
-        
+
         user_input = input("Enter the string: ")
 
         if user_input == random_string:
@@ -42,9 +42,9 @@ class Room:
         # other room setup - add the lamp and set up the exits.
         chest = Chest("Chest", "A mysterious chest in the corner of the room.", False, "closed", True)
         self.objects.append(chest)
-        
-        #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = ["down"]
+
+        #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level.
+        self.exits = ["north"]
 
 
 
@@ -74,7 +74,7 @@ class Room:
                 next = self.move(other_part)
                 if(next != None):
                     return next
-            
+
             elif command_base == "look":
                 self.look(other_part, player)
 
@@ -95,7 +95,7 @@ class Room:
 
             elif command_base in ["help", "?"]:
                 self.show_help()
-            
+
             elif command_base == "hint":
                 self.show_hint()
             else:
@@ -128,11 +128,11 @@ class Room:
             # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
                 if target == obj.name:
-                    print(obj.description) 
-                    if(obj.state != None): 
-                        print(f"The {obj.name} is {obj.state}")                   
+                    print(obj.description)
+                    if(obj.state != None):
+                        print(f"The {obj.name} is {obj.state}")
                     return
-        
+
     # this code could also probably be used verbatim
     def get(self, item_name, player):
         # Check if the item is in the room's objects list
@@ -155,7 +155,7 @@ class Room:
 
         # If the item was not found in the room
         print(f"There is no {item_name} here or you can't get it.")
-    
+
         def drop(self, item_name, player):
             # Check if the item is in the player's inventory
             for item in player.inventory:
@@ -163,7 +163,7 @@ class Room:
                     player.inventory.remove(item)
                     self.objects.append(item)
                     print(f"You drop the {item.name} on the ground.")
-                    return 
+                    return
 
             # If the item was not found in the player's inventory
             print(f"You can't drop {item_name}. You don't have that.")
