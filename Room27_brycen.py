@@ -44,7 +44,8 @@ class Room:
             "and the faint rustle of pages being turned echoes softly through the vast space. At the center of the room, a grand oak table stands,\n"
             "laden with manuscripts and quills, as if abandoned mid-study.\n"
             "The flickering light reveals a majestic figure perched atop a high podium—an imposing owl with piercing, luminous eyes that seem to see through your very soul.\n"
-            "The guardian of this library watches your every move, its presence both regal and intimidating. You can't help but feel a sense of wonder and foreboding as you take in the vast expanse of knowledge contained within these walls.\n"
+            "The guardian of this library watches your every move, its presence both regal and intimidating.\n"
+            "You can't help but feel a sense of wonder and foreboding as you take in the vast expanse of knowledge contained within these walls.\n"
             "Yet, an uneasy tension hangs in the air, as if the library itself is alive and watching, waiting to reveal its secrets to those deemed worthy—or to punish those who are not.\n"
         )
         
@@ -89,8 +90,77 @@ class Room:
     def handle_entrance_commands(self, command_base, other_part, player):
         if command_base == "look":
             self.look(other_part, player)
+
         elif command_base in ["move", "go"]:
-            self.move_from_entrance(other_part)
+            self.move_from_entrance(player)
+
+        elif command_base == "inventory":
+            self.show_inventory(player)
+
+        elif command_base == "stats":
+            self.show_stats(player)
+
+        elif command_base == "quit":
+            self.quit_game(player)
+
+        elif command_base in ["help", "?"]:
+            self.show_help()
+        
+        elif command_base == "hint":
+            self.show_hint()
+
+        else:
+            self.unknown_command()
+
+    def handle_library_commands(self, command_base, other_part, player):
+        if command_base == "look":
+            self.look(other_part, player)
+
+        elif command_base in ["move", "go"]:
+            pass
+            #self.move_from_entrance(player)
+
+        elif command_base == "inventory":
+            self.show_inventory(player)
+
+        elif command_base == "stats":
+            self.show_stats(player)
+
+        elif command_base == "quit":
+            self.quit_game(player)
+
+        elif command_base in ["help", "?"]:
+            self.show_help()
+        
+        elif command_base == "hint":
+            self.show_hint()
+
+        else:
+            self.unknown_command()
+
+    def handle_forbidden_section_commands(self,command_base, other_part, player):
+        if command_base == "look":
+            self.look(other_part, player)
+
+        elif command_base in ["move", "go"]:
+            pass
+            #self.move_from_entrance(player)
+
+        elif command_base == "inventory":
+            self.show_inventory(player)
+
+        elif command_base == "stats":
+            self.show_stats(player)
+
+        elif command_base == "quit":
+            self.quit_game(player)
+
+        elif command_base in ["help", "?"]:
+            self.show_help()
+        
+        elif command_base == "hint":
+            self.show_hint()
+
         else:
             self.unknown_command()
 
@@ -136,7 +206,7 @@ class Room:
             for obj in self.objects:
                 print(f"There are {obj.name}s here. Which one...")
 
-    def move_from_entrance(self):
+    def move_from_entrance(self, player):
         print (
             "\nYou start to enter into the libray and the owl lets out war screeches.\n"
             "Startled, you look up to see the owl swoop from its perch and scale 10 times in size.\n"
@@ -148,33 +218,34 @@ class Room:
         )
         ans = input("What do you do? (show/lie) ").lower().strip()
         if ans.startswith('s'):
-            self.show_note()
+            self.showNote(player)
         elif ans.startswith('l'):
-            self.lie()
+            self.Lie()
         else:
             print("That's not a valid response. Try again.")
             self.move_from_entrance()
 
-    def showNote(self):
-        print("You show the owl the note. The owl's eyes glow with anger and it lets out a deafening screech before swooping down and destroying you.")
-        self.player.health = 0
+    def showNote(self, player):
+        print("\nYou show the owl the note. The owl's eyes glow with anger and it lets out a deafening screech before swooping down and destroying you.")
+        player.health = 0
         print("Your health has dropped to 0. You have been killed by the owl.")
         # Check player's health and exit the game if it's 0
-        if not self.player.is_alive():
-            print("Game Over. You have died.")
+        if not player.is_alive():
+            print("\nGame Over.")
+            print(f"\nFinal Score: {player.score}\n")
             sys.exit(0)
 
     def Lie(self):
         print("You lie and say you want to explore the vast knowledge of tomes in the Owl's collection. The owl eyes you suspiciously but allows you to proceed.")
         self.state = "library"
 
-    def move(self, direction):
-        if direction in ["down", "d", "well"]:
-            print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
-            return "down"
-        else:
-            print("You can't go that way.")
-            return None
+    # def move(self, direction):
+    #     if direction in ["down", "d", "well"]:
+    #         print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
+    #         return "down"
+    #     else:
+    #         print("You can't go that way.")
+    #         return None
 
     def look(self, target, player):
         if(target == None or target == ""):
