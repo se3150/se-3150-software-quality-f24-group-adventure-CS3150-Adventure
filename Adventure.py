@@ -4,29 +4,39 @@ from player import Player
 from object import Object  
 import importlib
 
-# Load rooms from files and populate the rooms list
 def load_rooms():
     rooms = []
 
-    #get a list of files in the current directory
+    # Get a list of files in the current directory
     all_files = os.listdir()
-    room_files = []
-    for file in all_files:
-        if file.startswith("Room") and file.endswith(".py"):
-            room_files.append(file)
+    room_files = [
+        file for file in all_files 
+        if file.startswith("Room") and file.endswith(".py") and "_" in file
+    ]
 
-    #create room objects for each of the room files.
     # Sort the room files based on the room number
-    # Extract the number from the filename and use it as the sort key
-    room_files.sort(key=lambda x: int(x[4:].split("_")[0]))
+    try:
+        room_files.sort(key=lambda x: int(x[4:].split("_")[0]))
+    except ValueError as e:
+        print(f"Error sorting room files: {e}")
+        return []
 
-    # Now load the rooms in the correct order
-    rooms = []
+    # Load the rooms in the correct order
     for room_file in room_files:
         room_name = room_file[:-3]  # Strip '.py' from the filename
-        room_module = importlib.import_module(room_name)
-        room_instance = room_module.Room()
-        rooms.append(room_instance)
+        try:
+            # Attempt to import the room module
+            room_module = importlib.import_module(room_name)
+            
+            # Attempt to create a Room instance
+            room_instance = room_module.Room()
+            rooms.append(room_instance)
+        except (SyntaxError, ImportError, AttributeError) as e:
+            print(f"Error loading {room_file}: {e}")
+            print(f"Skipping {room_file} due to the above error.")
+        except Exception as e:
+            print(f"Error initializing Room in {room_file}: {e}")
+            print(f"Skipping {room_file} due to the above error.")
 
     return rooms
 
