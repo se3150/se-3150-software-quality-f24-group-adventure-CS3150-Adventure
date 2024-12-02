@@ -1,4 +1,4 @@
- # CS3150-Adventure
+# CS3150-Adventure
 
 This is the repository for the template code to setup the Utah Tech CS-3150 crowd sourced adventure game. The intention of this project is that each student in class will build a ROOM that is part of a whole adventure game. The rooms are linked together by a MAP (really a bi-directional connected graph of rooms) that the PLAYER will traverse during their adventure. 
 
@@ -69,3 +69,15 @@ Once all of the rooms have been created, when they are placed in the same direct
 + Objects will travel with the player from room to room. You can coordinate with other Room Authors to get an object in some room, and then use it in another.
 + rooms can change player stats. Rooms that do cool things should give the player a boost to their score. If players do dumb things you can hurt them by removing health. You might be generous and make an Object that the player could use to restore their health. You can also change the Player's condition - they could be any condition that you want. This can also pass from room to room and could affect the way play happens. For example, in one room, a person could fall in a river and be wet and cold. If they go to another room that is a wintery scene, say by an Ice Dragon, the person could freeze to death if they are cold and wet. The game would be over for them, and next time they wouldn't fall in the river.
 + Objects also have a state. On, off, broken, glowing, whatever. Use that to create interesting things across rooms as well.
+=======
+There was an issue with the way I created the repository and somehow we ended up with a forked repo. 
+
+This repo is the origninal which is great, but we need everyone to use the forked one now. 
+
+Please go to: 
+
+https://github.com/se3150/f24-group-adventure-we-reallonthesameteam
+
+and make your pull requests there.
+
+Thank you.

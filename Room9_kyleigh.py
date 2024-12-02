@@ -27,10 +27,10 @@ class Room:
             
         )
         # other room setup - add the lamp and set up the exits.
-        Dog = Dog("Dog Plushy", "A small stuffed dog that is damp on the ears and tail.", True, "off", True)
-        self.objects.append(Dog)
-        Doll = Doll("Glass Doll", "A Medium sized glass doll with a crack down the center of her face.", True, "off", True)
-        self.objects.append(Doll)
+        Doggy = Dog("Dog Plushy", "A small stuffed dog that is damp on the ears and tail.", True, "off", True)
+        self.objects.append(Doggy)
+        Dolly = Doll("Glass Doll", "A Medium sized glass doll with a crack down the center of her face.", True, "off", True)
+        self.objects.append(Dolly)
 
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
         self.exits = ["east", "south"]
