@@ -5,18 +5,22 @@ import random
 
 
 class Room:
+
+    objects = []
+
     def __init__(self):
         self.room_num = 2  # Brox room number
         self.description = (
             'You find yourself in a strange room with mystical energy radiating from every corner.\n'
             'A peculiar object sits in the middle of the room, drawing your attention.\n'
         )
-        objects = []
-        broxBox = Object('Brox Box', 'A box filled with magical power.', True, 'open', False)
-        objects.append(broxBox)
+        self.broxBox = TheBroxBox('Brox Box', 'A box filled with magical power.', True, 'open', False)
+        self.objects.append(self.broxBox)
         self.exits = ["up", "south", "west"] 
 
     def enter(self, player):
+
+        self.broxBox.player = player
 
         self.describe_room()
 
@@ -55,6 +59,9 @@ class Room:
 
             elif command_base in ["help", "?"]:
                 self.show_help()
+            
+            elif command_base == "use":
+                self.broxBox.use()
             
             elif command_base == "hint":
                 self.show_hint()
@@ -144,13 +151,13 @@ class Room:
         print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help")
 
     def show_hint(self):
-        print("This is the starting room. You probably ought to get the lamp and go down the well.")
+        print("This is a funky room with a box, get it type.")
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
 class TheBroxBox(Object):
 
-    def __init__(self, name, description, can_be_gotten, state, visible, player):
+    def __init__(self, name, description, can_be_gotten, state, visible, player=None):
         super().__init__(name, description, can_be_gotten, state, visible)
         self.player = player
         self.stopCounter = 0
