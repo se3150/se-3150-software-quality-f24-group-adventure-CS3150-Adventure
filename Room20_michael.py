@@ -56,7 +56,7 @@ class Room:
                 self.high_five_dave()
 
             elif command_base == "kick" and other_part.lower() == "dave":
-                self.kick_dave()
+                self.kick_dave(player)
 
             elif command_base == "inventory":
                 self.show_inventory(player)
@@ -128,10 +128,10 @@ class Room:
         print("You hear a click as the exits unlock.")
         self.exits_locked = False
 
-    def kick_dave(self):
+    def kick_dave(self, player):
         print("Not wanting to be forced to make friends with this weird creature, you instead decide to teach him a lesson with a forceful kick!")
         print("Dave looks at you with sadness in his eyes as he vanishes in a puff of smoke, you are now locked in here forever...")
-        Player.health = 0
+        player.health = 0
 
     def show_inventory(self, player):
         player.show_inventory()
