@@ -3,21 +3,14 @@ from player import Player
 import sys  # For exiting the game
 
 
-# this is how you create a new object. You inherit from class Object and override the 'use' function. 
-class Lamp(Object):
+
+class Dog(Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
-        # Call the superclass constructor
         super().__init__(name, description, can_be_gotten, state, visible)
 
-    def use(self):
-        # the lamp toggles when you 'use' it. 
-        if self.state == "off":
-            self.state = "on"
-            print(f"{self.name} is now on.")
-        else:
-            self.state = "off"
-            print(f"{self.name} is now off.")
-            ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
+class Doll(Object):
+    def __init__(self, name, description, can_be_gotten, state, visible):
+        super().__init__(name, description, can_be_gotten, state, visible)
 
 
 class Room:
@@ -25,20 +18,22 @@ class Room:
     objects = []
 
     def __init__(self):
-        self.room_num = 0
+        self.room_num = 9
         self.description = (
-            "You awaken, wondering how you got here. Some evil spell has been cast upon you!\n"
-            "You are sitting inside a dark room with stone floors, walls, and a low ceiling.\n"
-            "There are no doors and no windows. Water drips noisily from the ceiling.\n"
-            "A circular 'well' sits in the center of the room, the surface of the water\n"
-            "glows with an unearthly light.\n"
+            "You enter a room with muted pink walls and a big bed in the middle of the room.\n"
+            "After more than one glance around the room you notice a door to the east and one to the south.\n"
+            "In the bed there is a stuffed dog plushy and a glass doll laying on the bed.\n"
+            "The floor is wet and cold but you don't see water at your feet. \n"
+            
         )
         # other room setup - add the lamp and set up the exits.
-        lamp = Lamp("Lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
-        self.objects.append(lamp)
-        
+        Doggy = Dog("Dog Plushy", "A small stuffed dog that is damp on the ears and tail.", True, "off", True)
+        self.objects.append(Doggy)
+        Dolly = Doll("Glass Doll", "A Medium sized glass doll with a crack down the center of her face.", True, "off", True)
+        self.objects.append(Dolly)
+
         #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
-        self.exits = ["down"]
+        self.exits = ["east", "south"]
 
 
 
@@ -101,8 +96,11 @@ class Room:
                 print(f"There is a {obj.name} here.")
 
     def move(self, direction):
-        if direction in ["down", "d", "well"]:
-            print("You jump into the well, and your whole body tingles as you slip below the surface of the liquid. > blink <")
+        if direction in ["east", "e", "left", "l"]:
+            print("You enter a door that looks like it is dripping wet but you can't tell what the liquid is.")
+            return "left"
+        elif direction in ["south", "s", "down", "d"]:
+            print("You walk towards a red door with paint that is chipping along the sides. The door slowly opens as you walk towards it.")
             return "down"
         else:
             print("You can't go that way.")
@@ -113,8 +111,10 @@ class Room:
             self.describe_room()
             return
 
-        if target == "well":
-            print("Upon closer inspection, the liquid is not water -- it's pure magic. It seems the well may be a portal to somewhere.")
+        if target == "Doll":
+            print("Upon closer inspection, the crack is leaking black liquid and she looks like she is about to cry.")
+        if target == "Dog":
+            print("Once you pick up the stuffed dog you realize the whole plush is dripping. The dog doesn't look like it is wet but clearly it is. ")
         else:
             # Check if the object is in the room or in the player's inventory and print it description and status. You can use this code exactly.
             for obj in self.objects + player.inventory:
@@ -174,7 +174,7 @@ class Room:
         print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help")
 
     def show_hint(self):
-        print("This is the starting room. You probably ought to get the lamp and go down the well.")
+        print("This room is nothing amazing. maybe go through a door?")
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
