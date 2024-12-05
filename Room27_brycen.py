@@ -4,22 +4,6 @@ import sys  # For exiting the game
 import random
 
 
-# this is how you create a new object. You inherit from class Object and override the 'use' function. 
-# class Lamp(Object):
-#     def __init__(self, name, description, can_be_gotten, state, visible):
-#         # Call the superclass constructor
-#         super().__init__(name, description, can_be_gotten, state, visible)
-
-#     def use(self):
-#         # the lamp toggles when you 'use' it. 
-#         if self.state == "off":
-#             self.state = "on"
-#             print(f"{self.name} is now on.")
-#         else:
-#             self.state = "off"
-#             print(f"{self.name} is now off.")
-#             ("lamp", "A plain, but worn lamp, filled with fragrant oil.", True, "off", True)
-
 class Book (Object):
     def __init__(self, name, description, can_be_gotten, state, visible):
         super().__init__(name, description, can_be_gotten, state, visible)
@@ -28,12 +12,9 @@ class Book (Object):
         self.can_be_gotten = True
         self.visible = True
 
-    def use(self):
-        pass
-        # if self.state == 'off':
-        #     self.state = 'on'
-        # else:
-        #     self.state = 'off'
+class Note (Object):
+    def __init__(self, name, description, can_be_gotten, state, visible):
+        super().__init__(name, description, can_be_gotten, state, visible)
 
 
 class Room:
@@ -105,6 +86,8 @@ class Room:
         # other room setup - add the lamp and set up the exits.
         self.book = Book("Book", "A dusty old thick book, with an ominous glow from within the pages.", False, "closed", False)
         self.objects.append(self.book)
+
+        self.note = Note("Note", "A piece of paper with a number on it: 111", True, "available", True)
 
         self.state = "entrance"
 
@@ -197,8 +180,7 @@ class Room:
             self.look(other_part, player)
 
         elif command_base in ["move", "go"]:
-            pass
-            #self.move_from_entrance(player)
+            self.unknown_command()
 
         elif command_base in ["get", "take"]:
             self.get(other_part, player)
@@ -318,7 +300,8 @@ class Room:
         self.describe_room()
 
     def use(self, item, player):
-
+        if item == 'book':
+            print(self.open_book_description)
         
 
     def look(self, target, player):
@@ -409,7 +392,7 @@ class Room:
         elif self.state == 'forbidden_section':
             if self.book.visible == True:
                 print("Run 'get book'")
-
+                return
             self.hint_requests += 1
             if self.hint_requests == 3:
                 print("Run 'look shelves'")
