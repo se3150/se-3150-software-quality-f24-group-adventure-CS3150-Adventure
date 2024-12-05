@@ -43,24 +43,32 @@ class Room:
             "The air is thick with the scent of old parchment and a faint hint of mustiness. Dim, flickering candles cast dancing shadows on the walls,\n"
             "and the faint rustle of pages being turned echoes softly through the vast space. At the center of the room, a grand oak table stands,\n"
             "laden with manuscripts and quills, as if abandoned mid-study.\n"
-            "The flickering light reveals a majestic figure perched atop a high podium—an imposing owl with piercing, luminous eyes that seem to see through your very soul.\n"
+            "The flickering light reveals a majestic figure perched atop a high podium — an imposing owl with piercing, luminous eyes that seem to see through your very soul.\n"
             "The guardian of this library watches your every move, its presence both regal and intimidating.\n"
             "You can't help but feel a sense of wonder and foreboding as you take in the vast expanse of knowledge contained within these walls.\n"
-            "Yet, an uneasy tension hangs in the air, as if the library itself is alive and watching, waiting to reveal its secrets to those deemed worthy—or to punish those who are not.\n"
+            "Yet, an uneasy tension hangs in the air, as if the library itself is alive and watching, waiting to reveal its secrets to those deemed worthy — or to punish those who are not.\n"
         )
 
         self.move_from_entrance_description = (
             "\nYou start to enter into the libray and the owl lets out war screeches.\n"
             "Startled, you look up to see the owl swoop from its perch and scale 10 times in size.\n"
-            "Now towering over you, the owl demands to know your reasoning for entering.\n"
+            "Now towering over you, the Guardian Owl demands to know your reasoning for entering.\n"
             "You can either:\n"
-            "'Show' the owl your piece of paper from the previous room\n"
+            "'Show' the Guardian Owl your piece of paper from the previous room\n"
             "OR\n"
-            "'Lie' and say you want to explore the vast knowledge of tomes in the Owl's collection\n"
+            "'Lie' and say you want to explore the vast knowledge of tomes in the Guardian Owl's collection\n"
+        )
+
+        self.library_description = (
+            "As you step past the owl, a sense of relief washes over you, but the grandeur of the library quickly replaces it with awe. "
+            "The room is immense, with shelves that stretch up to a vaulted ceiling and disappear into the shadows above. Each shelf is packed with ancient tomes, their spines worn and titles faded, hinting at the vast repository of knowledge contained within. "
+            "The scent of old parchment and leather fills the air, mingling with the faint, lingering aroma of candle wax. Soft light filters through stained glass windows high above, casting colorful patterns on the wooden floor. "
+            "The silence is profound, broken only by the occasional rustle of pages and the distant creak of the wooden structure settling. In the center of the room, a large oak table stands, covered in open books, maps, and strange artifacts, as if left in the midst of some intense research. "
+            "As you move deeper into the library, you notice alcoves and nooks tucked away between the shelves, offering secluded spots for study and contemplation. The atmosphere is both inviting and intimidating, a testament to the centuries of wisdom and secrets held within these walls."
         )
         
         # other room setup - add the lamp and set up the exits.
-        book = Book("Book", "A dusty old thick book, with an ominous glow from within the pages.", True, "off", True)
+        book = Book("Book", "A dusty old thick book, with an ominous glow from within the pages.", False, "closed", True)
         self.objects.append(book)
 
         self.state = "entrance"
@@ -174,44 +182,18 @@ class Room:
         else:
             self.unknown_command()
 
-            #Do the command - You should make helper functions for each of these in your room as well.
-            # if command_base in ["move", "go"]:
-            #     next = self.move(other_part)
-            #     if(next != None):
-            #         return next
-            
-            # elif command_base == "look":
-            #     self.look(other_part, player)
-
-            # elif command_base in ["get", "take"]:
-            #     self.get(other_part, player)
-
-            # elif command_base in ["drop", "put"]:
-            #     self.drop(other_part, player)
-
-            # elif command_base == "inventory":
-            #     self.show_inventory(player)
-
-            # elif command_base == "stats":
-            #     self.show_stats(player)
-
-            # elif command_base == "quit":
-            #     self.quit_game(player)
-
-            # elif command_base in ["help", "?"]:
-            #     self.show_help()
-            
-            # elif command_base == "hint":
-            #     self.show_hint()
-            # else:
-            #     self.unknown_command()
-
-
 
 
     # Helper functions
     def describe_room(self):
-        print(self.entrance_description)
+        if self.state == 'entrance':
+            print(self.entrance_description)
+        elif self.state == 'library':
+            print(self.library_description)
+        elif self.state == 'forbidden_section':
+            #print(self.forbidden_section_description)
+            pass
+
         if self.objects:
             for obj in self.objects:
                 print(f"There are {obj.name}s here. Which one...")
@@ -219,16 +201,16 @@ class Room:
     def move_from_entrance(self, player):
         print(self.move_from_entrance_description)
         ans = input("What do you do? (show/lie) ").lower().strip()
-        if ans.startswith('s'):
+        if ans == 'show':
             self.showNote(player)
-        elif ans.startswith('l'):
+        elif ans == 'lie':
             self.Lie()
         else:
             print("That's not a valid response. Try again.")
             self.move_from_entrance()
 
     def showNote(self, player):
-        print("\nYou show the owl the note. The owl's eyes glow with anger and it lets out a deafening screech before swooping down and destroying you.")
+        print("\nYou show the Guardian Owl the note. The Guardian Owl's eyes glow with anger and it lets out a deafening screech before swooping down and destroying you.")
         player.health = 0
         print("Your health has dropped to 0. You have been killed by the owl.")
         # Check player's health and exit the game if it's 0
@@ -238,7 +220,7 @@ class Room:
             sys.exit(0)
 
     def Lie(self):
-        print("You lie and say you want to explore the vast knowledge of tomes in the Owl's collection. The owl eyes you suspiciously but allows you to proceed.")
+        print("You lie and say you want to explore the vast knowledge of tomes in the Guardian Owl's collection. The Guardian Owl eyes you suspiciously but allows you to proceed.")
         self.state = "library"
 
     # def move(self, direction):
@@ -315,7 +297,12 @@ class Room:
         print("Available commands: move, go, look, get, take, drop, inventory, stats, quit, help")
 
     def show_hint(self):
-        print("This is the starting room. You probably ought to get the lamp and go down the well.")
+        if self.state == 'entrance':
+            print("This is the entrance to the library. Consider moving into it, but be weary of the Guardian Owl...")
+        elif self.state == 'library':
+            print("This is the library. Keep the note hidden from the Guardian Owl. Try 'look'ing around...")
+        elif self.state == 'forbidden_section':
+            pass
 
     def unknown_command(self):
         print("You can't do that here. Try something else or type 'help' for options or 'hint' for a clue.")
