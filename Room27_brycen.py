@@ -46,7 +46,7 @@ class Room:
         )
 
         self.library_description = (
-            "\nAs you step past the owl, a sense of relief washes over you, but the grandeur of the library quickly replaces it with awe. "
+            "\nAs you step past the owl, a sense of relief washes over you, but the grandeur of the library quickly replaces it with awe."
             "\nThe room is immense, with shelves that stretch up to a vaulted ceiling and disappear into the shadows above. Each shelf is packed with ancient tomes, their spines worn and titles faded, hinting at the vast repository of knowledge contained within. "
             "\nThe scent of old parchment and leather fills the air, mingling with the faint, lingering aroma of candle wax. Soft light filters through stained glass windows high above, casting colorful patterns on the wooden floor. "
             "\nThe silence is profound, broken only by the occasional rustle of pages and the distant creak of the wooden structure settling. In the center of the room, a large oak table stands, covered in open books, maps, and strange artifacts, as if left in the midst of some intense research. "
@@ -54,16 +54,17 @@ class Room:
         )
 
         self.library_look_description = (
-            "\nYou explore the library and its vastness. Scouring through book titles in search of the one that may match the ISBN number on your note."
+            "\nYou explore the library and its vastness. You notice numbers following the same pattern as your note along the shelves. You realize the number is an ISBN number. Of course! It's a library."
+            "\nScouring through the shelves and book titles, you search of the one that may match the ISBN number on your note."
             "\nComing up empty and starting to get discouraged, you continue on. Deeper and deeper into the main hall."
             "\nThe old wood creaks with every step, and the small fires in the sconce torches dimly light the way."
             "\nIn the corner you notice a particular dark area with what seems a 'gate'. A wind rushes through, disturbing the crackling flames and turns the pages on a nearby open book, startling you."
         )
         
         self.move_from_library_description = (
-            "\nAs you cautiously approach the dark corner, you noticed. You make out what seems an iron gate, its intricate patterns casting eerie shadows in the flickering torchlight.\n"
-            "\nYou rattle the gate, but it doesn't budge. Suddenly, from the darkness, a grotesque goblin emerges, its eyes gleaming with mischief.\n"
-            "\nWith a sly grin, the goblin blocks your path and announces, 'To pass through here, you must play a game. Guess my number, and I shall let you enter.'\n"
+            "\nAs you cautiously approach the dark corner, you noticed. You make out what seems an iron gate, its intricate patterns casting eerie shadows in the flickering torchlight."
+            "\nYou rattle the gate, but it doesn't budge. Suddenly, from the darkness, a grotesque goblin emerges, its eyes gleaming with mischief."
+            "\nWith a sly grin, the goblin blocks your path and announces, 'To pass through here, you must play a game. Guess my number, and I shall let you enter.'"
         )
 
         self.forbidden_section_description = (
@@ -83,21 +84,21 @@ class Room:
             "\nThe sound of rustling pages fills the air, growing louder with each turn, until the book seems to hum with energy. A gust of wind rushes from the pages, tugging at your clothes and hair, as the pages race towards the center."
             "\nWith a sudden burst, a swirling vortex forms in the air, glowing with otherworldly light. You lean in, drawn by the strange force, and before you can react, the wind pulls you in. The world spins, and you are sucked into the portal, vanishing from the library."
         )
-        # other room setup - add the lamp and set up the exits.
+
         self.book = Book("Book", "A dusty old thick book, with an ominous glow from within the pages.", False, "closed", False)
         self.objects.append(self.book)
 
-        self.note = Note("Note", "A piece of paper with a number on it: 111", True, "available", True)
+        self.note = Note("Note", "A note with an odd number: 978-1-119293-32-3", True, "Old and tattered", True)
 
         self.state = "entrance"
 
-        #this is how you declare your exits. It doesn't matter what room the attach to, I'll worry about that in the global level. 
         self.exits = ["down"]
         self.hint_requests = 0
 
 
 
     def enter(self, player):
+        self.check_player_inventory_for_note(player)
         
         # step 1 - describe entrance
         print(self.entrance_description)
@@ -364,6 +365,12 @@ class Room:
 
     def show_inventory(self, player):
         player.show_inventory()
+
+    def check_player_inventory_for_note(self, player):
+        if 'note' in player.inventory or 'Note' in player.inventory:
+            return
+        else:
+            player.inventory.append(self.note)
 
     def show_stats(self, player):
         player.print_stats()
